@@ -8,6 +8,11 @@ import { cartSubtotal, MAX_QUANTITY, type CartLine } from "@/features/cart/model
 import { getProductById } from "@/features/catalog/model/products";
 import { formatPrice } from "@/lib/format";
 import { showToast } from "@/components/ui/toast";
+import {
+  getStoreOwnerWhatsAppUrl,
+  getCustomerWhatsAppUrl,
+  STORE_OWNER_WHATSAPP,
+} from "@/features/cart/model/whatsapp";
 import styles from "./checkout.module.css";
 
 const PAKISTAN_CITIES = [
@@ -117,6 +122,26 @@ export default function CheckoutPage() {
       subtotal: finalTotal,
     };
 
+    // WhatsApp automation:
+    // 1. Send clean TCS slip to store owner number
+    const storeOwnerUrl = getStoreOwnerWhatsAppUrl(record);
+    // 2. Open wa.me for customer with Thank you message
+    const customerUrl = getCustomerWhatsAppUrl(record);
+
+    if (typeof window !== "undefined") {
+      // Open WhatsApp for store owner with TCS slip immediately on click
+      window.open(storeOwnerUrl, "_blank", "noopener,noreferrer");
+
+      // Also open wa.me for customer with Thank you message
+      setTimeout(() => {
+        try {
+          window.open(customerUrl, "_blank", "noopener,noreferrer");
+        } catch {
+          // Fallback to on-screen button if popup was blocked
+        }
+      }, 400);
+    }
+
     setTimeout(() => {
       setCompletedOrder(record);
       // Clear cart
@@ -177,6 +202,41 @@ export default function CheckoutPage() {
               Your order has been received and is being prepared with utmost care. Our concierge will send a WhatsApp confirmation to{" "}
               <strong className={styles.phoneHighlight}>{completedOrder.phone}</strong> before dispatch.
             </p>
+
+            {/* WhatsApp Automation Card: TCS Slip & Customer Thank You */}
+            <div className={styles.whatsappCard}>
+              <div className={styles.whatsappCardHeader}>
+                <div className={styles.whatsappCardBadge}>
+                  <span aria-hidden="true">💬</span>
+                  <span>WhatsApp Automation Active</span>
+                </div>
+                <h3 className={styles.whatsappCardTitle}>TCS Delivery Slip Formatted</h3>
+                <p className={styles.whatsappCardDesc}>
+                  Order details formatted for TCS courier booking have been prepared for the store owner (<strong>0300-8451024</strong>).
+                </p>
+              </div>
+
+              <div className={styles.whatsappActionBtns}>
+                <a
+                  href={getCustomerWhatsAppUrl(completedOrder)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.whatsappCustomerCta}
+                  id="whatsapp-thankyou-cta"
+                >
+                  <span>Open WhatsApp &ldquo;Thank you&rdquo; Message</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+                <a
+                  href={getStoreOwnerWhatsAppUrl(completedOrder)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.whatsappStoreSecondary}
+                >
+                  Resend TCS Slip to Owner
+                </a>
+              </div>
+            </div>
 
             <div className={styles.orderReceipt}>
               <div className={styles.receiptRow}>
