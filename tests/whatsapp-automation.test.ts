@@ -11,8 +11,9 @@ import {
 
 test("formatWhatsAppPhone normalizes Pakistani numbers to E.164 without plus", () => {
   assert.equal(formatWhatsAppPhone("03424834128"), "923424834128");
-  assert.equal(formatWhatsAppPhone("+92 300 8451024"), "923008451024");
-  assert.equal(formatWhatsAppPhone("0300-8451024"), "923008451024");
+  assert.equal(formatWhatsAppPhone("+92 300 4323811"), "923004323811");
+  assert.equal(formatWhatsAppPhone("0300-4323811"), "923004323811");
+  assert.equal(STORE_OWNER_WHATSAPP, "923004323811");
   assert.equal(formatWhatsAppPhone("3001234567"), "923001234567");
   assert.equal(formatWhatsAppPhone(""), "");
 });

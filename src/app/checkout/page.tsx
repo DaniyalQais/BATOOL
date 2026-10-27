@@ -12,6 +12,7 @@ import {
   getStoreOwnerWhatsAppUrl,
   getCustomerWhatsAppUrl,
   STORE_OWNER_WHATSAPP,
+  STORE_OWNER_PHONE_DISPLAY,
 } from "@/features/cart/model/whatsapp";
 import styles from "./checkout.module.css";
 
@@ -212,7 +213,7 @@ export default function CheckoutPage() {
                 </div>
                 <h3 className={styles.whatsappCardTitle}>TCS Delivery Slip Formatted</h3>
                 <p className={styles.whatsappCardDesc}>
-                  Order details formatted for TCS courier booking have been prepared for the store owner (<strong>0300-8451024</strong>).
+                  Order details formatted for TCS courier booking have been prepared for the store owner (<strong>{STORE_OWNER_PHONE_DISPLAY}</strong>).
                 </p>
               </div>
 
@@ -276,7 +277,7 @@ export default function CheckoutPage() {
               </Link>
               <span className={styles.helpDivider} aria-hidden="true">·</span>
               <a
-                href="https://wa.me/923008451024"
+                href={`https://wa.me/${STORE_OWNER_WHATSAPP}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.grayTextLink}
@@ -504,7 +505,7 @@ export default function CheckoutPage() {
                         </div>
                         <div className={styles.digitalRow}>
                           <span>Account / Mobile #:</span>
-                          <strong>0300-8451024</strong>
+                          <strong>{STORE_OWNER_PHONE_DISPLAY}</strong>
                         </div>
                         <div className={styles.digitalRow}>
                           <span>Network:</span>
