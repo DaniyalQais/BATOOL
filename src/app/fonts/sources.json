@@ -1,0 +1,39 @@
+{
+  "retrieved": "2026-10-26",
+  "googleFontsCommit": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+  "records": [
+    {
+      "family": "cormorant-garamond",
+      "file": "cormorant-garamond-latin-italic.woff2",
+      "url": "https://fonts.gstatic.com/s/cormorantgaramond/v21/co3smX5slCNuHLi8bLeY9MK7whWMhyjYrGFEsdtdc62E6zd58jD-iNM8.woff2",
+      "bytes": 23660,
+      "sha256": "e48e58027030df56869b795ca6f19b7012158275f7ad7cde1900b4a0b68d02e2"
+    },
+    {
+      "family": "cormorant-garamond",
+      "file": "cormorant-garamond-latin-normal.woff2",
+      "url": "https://fonts.gstatic.com/s/cormorantgaramond/v21/co3umX5slCNuHLi8bLeY9MK7whWMhyjypVO7abI26QOD_v86KnTOig.woff2",
+      "bytes": 22876,
+      "sha256": "8048ac209bec741e1c29cd0cfac5aac1c0c2ba8c3ddbd4a58fa9bd92ef5c63c2"
+    },
+    {
+      "family": "cormorant-garamond",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap",
+      "licenseUrl": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/cormorantgaramond/OFL.txt",
+      "license": "Copyright 2015 the Cormorant Project Authors (github.com/CatharsisFonts/Cormorant)\n\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.\nThis license is copied below, and is also available with a FAQ at:\nhttps://scripts.sil.org/OFL"
+    },
+    {
+      "family": "dm-sans",
+      "file": "dm-sans-latin-normal.woff2",
+      "url": "https://fonts.gstatic.com/s/dmsans/v17/rP2Yp2ywxg089UriI5-g4vlH9VoD8Cmcqbu0-K4.woff2",
+      "bytes": 36932,
+      "sha256": "9fea608a947e67020c33cad9a6fe3d60c54119dfb8cff87768a8117a15ed7543"
+    },
+    {
+      "family": "dm-sans",
+      "cssUrl": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap",
+      "licenseUrl": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/dmsans/OFL.txt",
+      "license": "Copyright 2014 The DM Sans Project Authors (https://github.com/googlefonts/dm-fonts)\r\n\r\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.\r\nThis license is copied below, and is also available with a FAQ at:\r\nhttps://scripts.sil.org/OFL\r"
+    }
+  ]
+}

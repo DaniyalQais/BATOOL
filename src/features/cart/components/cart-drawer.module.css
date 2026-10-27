@@ -1,0 +1,224 @@
+.drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(100%, 480px);
+  max-width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100vh;
+  max-height: 100dvh;
+  margin: 0 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+}
+.drawer[open] {
+  display: flex;
+  flex-direction: column;
+  animation: enter 160ms ease-out;
+}
+.header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 12px max(24px, env(safe-area-inset-left));
+  border-bottom: 1px solid var(--line);
+}
+.heading {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+.drawer .closeButton {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  font-size: 26px;
+}
+.drawer :is(a, button):focus-visible,
+.checkout h3:focus {
+  outline: 2px solid var(--plum);
+  outline-offset: 3px;
+}
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  scrollbar-gutter: stable;
+}
+.empty h3,
+.checkout h3 {
+  margin: 0 0 10px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.empty > p {
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.primary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 48px;
+  padding: 14px 16px;
+  background: var(--plum);
+  color: var(--paper);
+  font-size: 12px;
+  text-align: left;
+  line-height: 1.5;
+}
+.primary:hover {
+  background: #6f4b59;
+}
+.items {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.item {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 0 0 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.thumbnail {
+  display: block;
+}
+.photo {
+  width: 64px;
+  height: 88px;
+}
+.photo img {
+  object-position: 50% 6%;
+}
+.itemDetails {
+  min-width: 0;
+}
+.name {
+  display: inline-block;
+  max-width: 100%;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 24px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.name:hover {
+  color: var(--accent);
+}
+.itemDetails > p {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 8px;
+}
+.quantity {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+}
+.quantity button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+}
+.quantity button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+.quantity span {
+  min-width: 24px;
+  text-align: center;
+  font-size: 12px;
+}
+.textButton {
+  min-height: 44px;
+  padding: 8px 0;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.textButton:hover {
+  color: var(--accent);
+}
+.itemDetails .lineTotal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-top: 12px;
+  color: var(--ink);
+}
+.summary {
+  padding-top: 4px;
+}
+.subtotal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 0 0 18px;
+  font-size: 15px;
+}
+.disclosure {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.feedback {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.feedback:empty {
+  margin: 0;
+}
+.checkout > p {
+  font-size: 13px;
+  color: var(--muted);
+}
+@media (max-width: 480px) {
+  .content {
+    padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right));
+  }
+  .header {
+    padding-left: max(16px, env(safe-area-inset-left));
+  }
+}
+@keyframes enter {
+  from { transform: translateX(16px); opacity: 0.96; }
+  to { transform: none; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drawer[open] { animation: none; }
+}

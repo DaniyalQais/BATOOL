@@ -1,0 +1,28 @@
+{
+  "retrieved": "2026-10-26",
+  "cssUrl": "https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400..700;1,400&display=swap",
+  "licenseUrl": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/inter/OFL.txt",
+  "reference": "https://www.gulahmedshop.com/",
+  "referenceFontSettings": {
+    "body": "Inter, sans-serif",
+    "heading": "Inter, sans-serif"
+  },
+  "records": [
+    {
+      "file": "inter-latin-italic.woff2",
+      "style": "italic",
+      "weight": "400",
+      "url": "https://fonts.gstatic.com/s/inter/v20/UcCM3FwrK3iLTcvneQg7Ca725JhhKnNqk4j1ebLhAm8SrXTc2dtRipWF.woff2",
+      "bytes": 25040,
+      "sha256": "7ea9d2f1274cebee837f0c6eebb426c18fbb2333a6b6da4d02ec5cf47db7fb8e"
+    },
+    {
+      "file": "inter-latin-normal.woff2",
+      "style": "normal",
+      "weight": "400 700",
+      "url": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
+      "bytes": 48256,
+      "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+    }
+  ]
+}

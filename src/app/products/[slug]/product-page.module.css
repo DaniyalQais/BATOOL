@@ -1,0 +1,137 @@
+.page {
+  width: calc(100% - 48px);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 0 72px;
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.back:hover {
+  color: var(--accent);
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 384px) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+.photography {
+  min-width: 0;
+  width: min(100%, var(--photo-desktop-width));
+  justify-self: center;
+  margin: 0;
+}
+.photography .photo {
+  width: 100%;
+  aspect-ratio: var(--photo-aspect);
+  background: var(--paper);
+}
+.photo img {
+  /* These narrow sample portraits need their full height, not a tighter crop. */
+  object-fit: contain;
+  object-position: center;
+}
+.photography figcaption {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+.information {
+  min-width: 0;
+  /* Normal flow is the default on shorter screens and with expanded disclosures. */
+}
+.category {
+  margin: 4px 0 12px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(42px, 4.2vw, 60px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+  margin: 0 0 16px;
+}
+.price {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+.description {
+  max-width: 42ch;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 0;
+}
+.disclosure {
+  margin: 16px 0 28px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.details {
+  border-top: 1px solid var(--line);
+}
+.details details {
+  border-bottom: 1px solid var(--line);
+}
+.details summary {
+  cursor: pointer;
+  padding: 18px 8px;
+  min-height: 52px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.details summary:hover {
+  color: var(--accent);
+}
+.details summary:focus-visible {
+  outline: 2px solid #9e6c83;
+  outline-offset: 2px;
+}
+.details p {
+  margin: 0 8px 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.details a {
+  display: inline-block;
+  padding: 10px 0;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.details a:hover {
+  color: var(--accent);
+}
+@media (min-width: 901px) and (min-height: 1000px) {
+  .information:not(:has(details[open])) {
+    position: sticky;
+    top: calc(var(--header-height) + 24px);
+  }
+}
+@media (max-width: 900px) {
+  .page {
+    width: calc(100% - 32px);
+    padding: 20px 0 48px;
+  }
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .photography {
+    width: min(100%, var(--photo-mobile-width));
+  }
+}

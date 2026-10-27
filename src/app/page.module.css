@@ -1,0 +1,10 @@
+.page {
+  max-width: none;
+}
+.keepTogether {
+  white-space: nowrap;
+}
+.content {
+  max-width: 1600px;
+  margin-inline: auto;
+}
