@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useId, type FormEvent } from "react";
+import { useState, useEffect, useId, type FormEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCartItems, cartActions } from "@/features/cart/model/store";
@@ -73,6 +73,16 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<OrderSubmission | null>(null);
   const [copied, setCopied] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("admin") === "1" || params.get("admin") === "true") {
+        setIsAdmin(true);
+      }
+    }
+  }, []);
 
   const nameId = useId();
   const phoneId = useId();
@@ -213,11 +223,12 @@ export default function CheckoutPage() {
                 </div>
                 <h3 className={styles.whatsappCardTitle}>TCS Delivery Slip Formatted</h3>
                 <p className={styles.whatsappCardDesc}>
-                  Order details formatted for TCS courier booking have been prepared for the store owner (<strong>{STORE_OWNER_PHONE_DISPLAY}</strong>).
+                  Order details formatted for TCS courier booking have been prepared for our dispatch team.
                 </p>
               </div>
 
-              <div className={styles.whatsappActionBtns}>
+              {/* 3. Sticky WhatsApp green button on mobile so customer always sees it */}
+              <div className={styles.whatsappStickyMobileBar}>
                 <a
                   href={getCustomerWhatsAppUrl(completedOrder)}
                   target="_blank"
@@ -225,19 +236,28 @@ export default function CheckoutPage() {
                   className={styles.whatsappCustomerCta}
                   id="whatsapp-thankyou-cta"
                 >
+                  <span className={styles.whatsappButtonIcon} aria-hidden="true">💬</span>
                   <span>Open WhatsApp &ldquo;Thank you&rdquo; Message</span>
                   <span aria-hidden="true">↗</span>
                 </a>
+              </div>
+            </div>
+
+            {/* 2. Admin-only panel: Resend TCS Slip to Owner moved out of customer view */}
+            {isAdmin && (
+              <div className={styles.adminPanelBox}>
+                <span className={styles.adminBadge}>Admin Dispatch Panel</span>
+                <p className={styles.adminDesc}>Staff access only: courier booking and internal slip resend.</p>
                 <a
                   href={getStoreOwnerWhatsAppUrl(completedOrder)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.whatsappStoreSecondary}
                 >
-                  Resend TCS Slip to Owner
+                  Resend TCS Slip to Owner WhatsApp
                 </a>
               </div>
-            </div>
+            )}
 
             <div className={styles.orderReceipt}>
               <div className={styles.receiptRow}>

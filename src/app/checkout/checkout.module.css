@@ -811,6 +811,11 @@
   line-height: 1.5;
 }
 
+.whatsappStickyMobileBar {
+  display: block;
+  width: 100%;
+}
+
 .whatsappActionBtns {
   display: flex;
   gap: 12px;
@@ -818,12 +823,11 @@
 }
 
 .whatsappCustomerCta {
-  flex: 1;
-  min-width: 220px;
-  min-height: 44px;
+  width: 100%;
+  min-height: 48px;
   background: #25d366;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.05em;
   display: inline-flex;
@@ -831,23 +835,56 @@
   justify-content: center;
   gap: 8px;
   text-decoration: none;
-  padding: 10px 18px;
+  padding: 12px 20px;
+  border-radius: 2px;
   transition: all 180ms ease;
-  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.25);
+  box-shadow: 0 2px 10px rgba(37, 211, 102, 0.3);
 }
 
 .whatsappCustomerCta:hover {
   background: #20ba5a;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+}
+
+.whatsappButtonIcon {
+  font-size: 16px;
+}
+
+/* Admin Dispatch Panel (admin only) */
+.adminPanelBox {
+  margin: 16px 0 24px;
+  padding: 14px 16px;
+  background: #fbf9f6;
+  border: 1px dashed #c5a880;
+  text-align: left;
+}
+
+.adminBadge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8c6d46;
+  background: #f5ede2;
+  padding: 2px 6px;
+  margin-bottom: 6px;
+}
+
+.adminDesc {
+  margin: 0 0 10px;
+  font-size: 11px;
+  color: #666666;
+  line-height: 1.4;
 }
 
 .whatsappStoreSecondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  padding: 10px 16px;
+  min-height: 38px;
+  padding: 8px 14px;
   background: #ffffff;
   border: 1px solid #111111;
   color: #111111;
@@ -979,5 +1016,31 @@
 
   .placeOrderBtn {
     min-height: 52px;
+  }
+
+  /* 3. Sticky WhatsApp green button on mobile Thank You page */
+  .whatsappStickyMobileBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 12px 16px;
+    border-top: 1px solid #E5E5E5;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .whatsappStickyMobileBar .whatsappCustomerCta {
+    width: 100%;
+    min-height: 52px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .successCard {
+    padding-bottom: 92px;
   }
 }
