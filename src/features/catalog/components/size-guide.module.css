@@ -1,0 +1,89 @@
+.trigger {
+  display: block;
+  min-height: 44px;
+  margin: 0 0 8px auto;
+  padding: 8px 0;
+  color: var(--plum);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.dialog {
+  width: min(640px, calc(100% - 32px));
+  max-width: calc(100% - 32px);
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 28px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.header h2 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 32px;
+}
+.dialog .closeButton {
+  position: static;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  font-size: 26px;
+}
+.intro {
+  margin: 12px 0 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.tableWrap {
+  overflow-x: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 12px;
+}
+.table caption {
+  padding: 0 0 14px;
+  text-align: left;
+  color: var(--muted);
+}
+.table th, .table td {
+  padding: 14px 8px;
+  border-bottom: 1px solid var(--line);
+}
+.table thead {
+  background: #eee7e1;
+}
+.table th {
+  font-weight: 500;
+}
+.guidance {
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.guidance strong {
+  color: var(--ink);
+}
+.note {
+  margin-bottom: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+}
+@media (max-width: 480px) {
+  .dialog { padding: 18px; }
+  .header h2 { font-size: 28px; }
+  .table th, .table td { padding-inline: 5px; }
+}

@@ -10,6 +10,21 @@
   max-width: 1180px;
   margin: 0 auto;
 }
+.previewNotice {
+  margin: 0 0 28px;
+  padding: 14px 18px;
+  border-left: 2px solid var(--plum);
+  background: var(--paper);
+  color: var(--muted);
+  font-size: 12px;
+}
+.ensembleTag {
+  align-self: flex-start;
+  padding: 3px 7px;
+  background: #eee7e1;
+  color: var(--plum);
+  font-size: 10px;
+}
 
 /* Header & Breadcrumbs */
 .topNav {

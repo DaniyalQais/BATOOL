@@ -1,5 +1,5 @@
 "use client";
-import { memo, useState, useRef, type CSSProperties } from "react";
+import { memo, useState, useRef } from "react";
 import Link from "next/link";
 import { ProductPhoto } from "@/components/ui/product-photo";
 import { EyeIcon } from "@/components/ui/icons";
@@ -61,10 +61,6 @@ export const ProductCard = memo(function ProductCard({
   return (
     <article
       className={`${styles.card} ${isScaling || isAdded ? styles.cardAdding : ""}`}
-      style={{
-        "--card-position": p.cardPosition ?? "50% 6%",
-        "--card-zoom": p.cardZoom ?? 1,
-      } as CSSProperties}
     >
       <div className={styles.media} ref={mediaRef}>
         <Link
@@ -74,6 +70,7 @@ export const ProductCard = memo(function ProductCard({
         >
           <ProductPhoto
             slug={p.imageSlug}
+            framing={{ position: p.cardPosition, zoom: p.cardZoom }}
             alt={`${p.name}: ${p.description}. ${p.imageNote ?? "Sample editorial imagery."}`}
             className={styles.photo}
             sizes="(max-width: 560px) calc(44vw - 7px), (max-width: 900px) calc(45vw - 7px), (max-width: 1600px) calc(22.5vw - 16.5px), 344px"

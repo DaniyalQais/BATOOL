@@ -8,6 +8,7 @@ import { collectionHref } from "@/features/catalog/model/catalog";
 import { formatPrice } from "@/lib/format";
 import { useCartItems, cartActions } from "../model/store";
 import { cartSubtotal, MAX_QUANTITY, type CartLine } from "../model/cart";
+import { checkoutTotals, expressShipping } from "../model/checkout";
 import { cartLineKey, removalFocusTarget } from "../model/drawer-focus";
 import styles from "./cart-drawer.module.css";
 
@@ -23,7 +24,7 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
   const focusedLine = useRef<string | null>(null);
   const previousItems = useRef(items);
   const intent = useRef<{ line: CartLine; before: readonly CartLine[] } | null>(null);
-  const total = cartSubtotal(items);
+  const totals = checkoutTotals(items);
   const showCheckout = checkout && items.length > 0;
 
   function focusAfterRemoval(before: readonly CartLine[], key: string) {
@@ -74,7 +75,7 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal label="shopping bag" onClose={onClose} className={styles.drawer}
-      header={<h2 className={styles.heading}>Shopping bag</h2>}
+      header={<h2 className={styles.heading}>{showCheckout ? "Your order summary" : "Shopping bag"}</h2>}
       headerClassName={styles.header} closeButtonClassName={styles.closeButton}>
       <div className={styles.content} onFocusCapture={(event) => {
         focusedLine.current = (event.target as HTMLElement).closest<HTMLElement>('[data-cart-line]')?.dataset.cartLine ?? null;
@@ -89,10 +90,34 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
           </div>
         ) : showCheckout ? (
           <div className={styles.checkout}>
-            <h3 ref={checkoutHeading} tabIndex={-1}>Your edit looks lovely.</h3>
-            <p>Bag subtotal: <strong>{formatPrice(total)}</strong></p>
-            <p>This is a design preview. No order has been placed and no payment is being collected.</p>
-            <p>Live checkout needs the client’s confirmed products, shipping terms and payment or cash-on-delivery setup.</p>
+            <p className={styles.eyebrow}>01 Bag / 02 Review / 03 Delivery</p>
+            <h3 ref={checkoutHeading} tabIndex={-1}>Your edit, complete.</h3>
+            <p>Review your stitched ensembles before adding your delivery details.</p>
+            <ul className={styles.reviewItems} aria-label="Order summary items">
+              {items.map(line => {
+                const product = getProductById(line.id)!;
+                return (
+                  <li key={cartLineKey(line)}>
+                    <div>
+                      <strong>{product.name}</strong>
+                      <p>Size {line.size} · Qty {line.quantity}</p>
+                      <span className={styles.tag}>3-Piece Stitched</span>
+                    </div>
+                    <span>{formatPrice(cartSubtotal([line]))}</span>
+                  </li>
+                );
+              })}
+            </ul>
+            <dl className={styles.costs}>
+              <div><dt>Subtotal</dt><dd>{formatPrice(totals.subtotal)}</dd></div>
+              <div><dt>{expressShipping.label}</dt><dd>Complimentary</dd></div>
+              <div><dt>Payment</dt><dd>Cash on Delivery</dd></div>
+              <div className={styles.total}><dt>Total payable</dt><dd>{formatPrice(totals.total)}</dd></div>
+            </dl>
+            <p className={styles.deliveryNote}>Estimated delivery: {expressShipping.estimate} across Pakistan. Pay when your ensemble arrives.</p>
+            <Link href="/checkout/?preview=1" className={styles.primary} onNavigate={onClose}>
+              Continue to delivery details <span aria-hidden="true">→</span>
+            </Link>
             <button type="button" className={styles.textButton} onClick={() => setCheckout(false)}>Back to bag</button>
           </div>
         ) : (
@@ -105,11 +130,15 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
                   <li key={key} data-cart-line={key} className={styles.item}
                     ref={(node) => { if (node) rows.current.set(key, node); else rows.current.delete(key); }}>
                     <Link href={`/products/${product.slug}/`} onNavigate={onClose} className={styles.thumbnail} aria-label={`View ${product.name}`}>
-                      <ProductPhoto slug={product.imageSlug} alt="" className={styles.photo} sizes="64px" />
+                      <ProductPhoto slug={product.imageSlug} alt="" className={styles.photo} sizes="64px"
+                        framing={{ position: product.cardPosition, zoom: product.cardZoom }} />
                     </Link>
                     <div className={styles.itemDetails}>
                       <Link href={`/products/${product.slug}/`} onNavigate={onClose} className={styles.name}>{product.name}</Link>
-                      <p>Size: {line.size}</p>
+                      <div className={styles.itemMeta}>
+                        <span className={styles.sizeBadge}>Size {line.size}</span>
+                        <span className={styles.tag}>3-Piece Stitched</span>
+                      </div>
                       <p>Unit price: {formatPrice(product.price)}</p>
                       <div className={styles.controls}>
                         <div className={styles.quantity} role="group" aria-label={`${product.name} ${line.size} quantity`}>
@@ -136,10 +165,15 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
               })}
             </ul>
             <div className={styles.summary}>
-              <p className={styles.subtotal}><span>Subtotal</span><strong>{formatPrice(total)}</strong></p>
-              <Link href="/checkout/" ref={checkoutButton as any} className={styles.primary} onClick={onClose}>
-                Continue to checkout <span aria-hidden="true">→</span>
-              </Link>
+              <p className={styles.subtotal}><span>Subtotal</span><strong>{formatPrice(totals.subtotal)}</strong></p>
+              <div className={styles.serviceSummary}>
+                <p><span>Cash on Delivery</span><span>Pay on arrival</span></p>
+                <p><span>{expressShipping.label}</span><span>Complimentary</span></p>
+                <small>{expressShipping.estimate} · Pakistan</small>
+              </div>
+              <button type="button" ref={checkoutButton} className={styles.primary} onClick={() => setCheckout(true)}>
+                Proceed to Checkout <span aria-hidden="true">→</span>
+              </button>
             </div>
           </>
         )}

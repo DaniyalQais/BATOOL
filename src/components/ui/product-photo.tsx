@@ -6,12 +6,14 @@ export function ProductPhoto({
   className = "",
   priority = false,
   sizes = "(max-width: 560px) 44vw, (max-width: 900px) 43vw, 23vw",
+  framing,
 }: {
   slug: string;
   alt: string;
   className?: string;
   priority?: boolean;
   sizes?: string;
+  framing?: { position?: string; zoom?: number };
 }) {
   return (
     <div className={`${styles.frame} ${className}`}>
@@ -22,6 +24,11 @@ export function ProductPhoto({
         sizes={sizes}
         preload={priority}
         className={styles.image}
+        style={framing ? {
+          objectPosition: framing.position,
+          transform: `scale(${framing.zoom ?? 1})`,
+          transformOrigin: framing.position ?? "center",
+        } : undefined}
       />
     </div>
   );

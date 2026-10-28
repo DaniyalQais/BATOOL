@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect, useId, type FormEvent } from "react";
+import { Suspense, useState, useId, type FormEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useCartItems, cartActions } from "@/features/cart/model/store";
-import { cartSubtotal, MAX_QUANTITY, type CartLine } from "@/features/cart/model/cart";
+import { cartCount, MAX_QUANTITY, type CartLine } from "@/features/cart/model/cart";
+import { checkoutTotals, expressShipping } from "@/features/cart/model/checkout";
 import { getProductById } from "@/features/catalog/model/products";
 import { formatPrice } from "@/lib/format";
 import { showToast } from "@/components/ui/toast";
@@ -53,8 +55,18 @@ interface OrderSubmission {
 }
 
 export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<main className={styles.checkoutPage}><p role="status">Preparing your checkout…</p></main>}>
+      <Checkout />
+    </Suspense>
+  );
+}
+
+function Checkout() {
+  const params = useSearchParams();
+  const isPreview = params.get("preview") === "1";
+  const isAdmin = params.get("admin") === "1" || params.get("admin") === "true";
   const items = useCartItems();
-  const subtotal = cartSubtotal(items);
 
   // Form State
   const [name, setName] = useState("");
@@ -73,16 +85,6 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [completedOrder, setCompletedOrder] = useState<OrderSubmission | null>(null);
   const [copied, setCopied] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get("admin") === "1" || params.get("admin") === "true") {
-        setIsAdmin(true);
-      }
-    }
-  }, []);
 
   const nameId = useId();
   const phoneId = useId();
@@ -108,18 +110,17 @@ export default function CheckoutPage() {
     }
   };
 
-  const discountAmount = promoApplied ? Math.round(subtotal * 0.1) : 0;
-  const finalTotal = Math.max(0, subtotal - discountAmount);
+  const { subtotal, discount: discountAmount, total: finalTotal } = checkoutTotals(items, promoApplied);
 
   const handleSubmitOrder = (e: FormEvent) => {
     e.preventDefault();
 
-    if (!items.length) return;
+    if (!items.length || submitting) return;
     if (!name.trim() || !phone.trim() || !city.trim() || !address.trim()) return;
 
     setSubmitting(true);
 
-    const orderRef = `BT-${Math.floor(100000 + Math.random() * 900000)}`;
+    const orderRef = `BT-${isPreview ? "TEST-" : ""}${Math.floor(100000 + Math.random() * 900000)}`;
 
     const record: OrderSubmission = {
       orderRef,
@@ -139,7 +140,7 @@ export default function CheckoutPage() {
     // 2. Open wa.me for customer with Thank you message
     const customerUrl = getCustomerWhatsAppUrl(record);
 
-    if (typeof window !== "undefined") {
+    if (!isPreview && typeof window !== "undefined") {
       // Open WhatsApp for store owner with TCS slip immediately on click
       window.open(storeOwnerUrl, "_blank", "noopener,noreferrer");
 
@@ -192,7 +193,7 @@ export default function CheckoutPage() {
 
           <div className={styles.successCard}>
             <div className={styles.successIcon} aria-hidden="true">✓</div>
-            <h1 className={styles.successTitle}>Thank you, {completedOrder.name}!</h1>
+            <h1 className={styles.successTitle}>{isPreview ? "Test order complete" : `Thank you, ${completedOrder.name}!`}</h1>
 
             {/* Copyable Order ID on click with Copied toast */}
             <button
@@ -202,7 +203,7 @@ export default function CheckoutPage() {
               title="Click to copy Order ID"
               aria-label={`Copy Order Confirmation ID ${completedOrder.orderRef}`}
             >
-              ORDER CONFIRMATION: {completedOrder.orderRef}
+              {isPreview ? "TEST REFERENCE" : "ORDER CONFIRMATION"}: {completedOrder.orderRef}
               <span className={styles.copyBadge}>
                 {copied ? "Copied ✓" : "Copy"}
               </span>
@@ -210,12 +211,14 @@ export default function CheckoutPage() {
 
             {/* Phone number bold and black */}
             <p className={styles.successSubtitle}>
-              Your order has been received and is being prepared with utmost care. Our concierge will send a WhatsApp confirmation to{" "}
-              <strong className={styles.phoneHighlight}>{completedOrder.phone}</strong> before dispatch.
+              {isPreview ? "Your checkout preview is complete. No order, payment or WhatsApp message has been submitted." : (
+                <>Your order has been received and is being prepared with utmost care. Our concierge will send a WhatsApp confirmation to{" "}
+                  <strong className={styles.phoneHighlight}>{completedOrder.phone}</strong> before dispatch.</>
+              )}
             </p>
 
             {/* WhatsApp Automation Card: TCS Slip & Customer Thank You */}
-            <div className={styles.whatsappCard}>
+            {!isPreview && <div className={styles.whatsappCard}>
               <div className={styles.whatsappCardHeader}>
                 <div className={styles.whatsappCardBadge}>
                   <span aria-hidden="true">💬</span>
@@ -241,10 +244,10 @@ export default function CheckoutPage() {
                   <span aria-hidden="true">↗</span>
                 </a>
               </div>
-            </div>
+            </div>}
 
             {/* 2. Admin-only panel: Resend TCS Slip to Owner moved out of customer view */}
-            {isAdmin && (
+            {!isPreview && isAdmin && (
               <div className={styles.adminPanelBox}>
                 <span className={styles.adminBadge}>Admin Dispatch Panel</span>
                 <p className={styles.adminDesc}>Staff access only: courier booking and internal slip resend.</p>
@@ -260,6 +263,12 @@ export default function CheckoutPage() {
             )}
 
             <div className={styles.orderReceipt}>
+              {completedOrder.items.map(line => (
+                <div className={styles.receiptRow} key={`${line.id}-${line.size}`}>
+                  <span className={styles.receiptLabel}>{getProductById(line.id)?.name} · Size {line.size} · Qty {line.quantity}</span>
+                  <span className={styles.receiptValue}>3-Piece Stitched</span>
+                </div>
+              ))}
               <div className={styles.receiptRow}>
                 <span className={styles.receiptLabel}>Delivery To</span>
                 <span className={styles.receiptValue}>{completedOrder.name}</span>
@@ -276,7 +285,7 @@ export default function CheckoutPage() {
               </div>
               <div className={styles.receiptRow}>
                 <span className={styles.receiptLabel}>Delivery Time</span>
-                <span className={styles.receiptValue}>2–4 Business Days (Express Courier)</span>
+                <span className={styles.receiptValue}>{expressShipping.estimate} · {expressShipping.label}</span>
               </div>
               <div className={styles.receiptRow}>
                 <span className={styles.receiptLabel}>Total Payable Amount</span>
@@ -293,7 +302,7 @@ export default function CheckoutPage() {
             {/* Below CONTINUE SHOPPING button, two text links: "Track Your Order" and "Need Help? WhatsApp Us" */}
             <div className={styles.confirmationHelpLinks}>
               <Link href="/help/delivery/" className={styles.grayTextLink}>
-                Track Your Order
+                {isPreview ? "Delivery & exchange information" : "Track Your Order"}
               </Link>
               <span className={styles.helpDivider} aria-hidden="true">·</span>
               <a
@@ -352,6 +361,7 @@ export default function CheckoutPage() {
           </Link>
         </header>
 
+        {isPreview && <p className={styles.previewNotice}>Checkout preview · Use sample delivery details to test your order. No orders or payments will be submitted.</p>}
         <div className={styles.layout}>
           {/* Left Side: Shipping & Payment Form (First column on desktop) */}
           <form className={styles.formSection} onSubmit={handleSubmitOrder}>
@@ -370,6 +380,7 @@ export default function CheckoutPage() {
                   </label>
                   <input
                     id={nameId}
+                    autoComplete="name"
                     type="text"
                     required
                     placeholder="e.g. Ayesha Khan"
@@ -386,6 +397,7 @@ export default function CheckoutPage() {
                   </label>
                   <input
                     id={phoneId}
+                    autoComplete="tel"
                     type="tel"
                     required
                     placeholder="03xx xxxxxxx"
@@ -403,6 +415,7 @@ export default function CheckoutPage() {
                   </label>
                   <select
                     id={cityId}
+                    autoComplete="address-level2"
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
@@ -423,6 +436,7 @@ export default function CheckoutPage() {
                   </label>
                   <textarea
                     id={addressId}
+                    autoComplete="street-address"
                     required
                     rows={3}
                     placeholder="House/Apartment #, Street, Block/Phase, Sector/Area..."
@@ -491,7 +505,7 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Easypaisa / JazzCash */}
-                <div
+                {!isPreview && <div
                   className={`${styles.paymentOptionCard} ${
                     paymentMethod === "digital" ? styles.active : ""
                   }`}
@@ -537,7 +551,7 @@ export default function CheckoutPage() {
                       </p>
                     </div>
                   )}
-                </div>
+                </div>}
               </div>
             </section>
 
@@ -568,7 +582,9 @@ export default function CheckoutPage() {
                 className={styles.placeOrderBtn}
               >
                 {submitting
-                  ? "Securing Your Order..."
+                  ? (isPreview ? "Completing test order..." : "Securing Your Order...")
+                  : isPreview
+                  ? `Complete test order - Cash on Delivery (${formatPrice(finalTotal)})`
                   : paymentMethod === "cod"
                   ? `Place Order - Cash on Delivery (${formatPrice(finalTotal)})`
                   : `Place Order - Easypaisa / JazzCash (${formatPrice(finalTotal)})`}
@@ -581,7 +597,7 @@ export default function CheckoutPage() {
             <div className={styles.summaryHeader}>
               <h2 className={styles.summaryTitle}>Order Summary</h2>
               <span className={styles.summaryCount}>
-                {items.reduce((sum, item) => sum + item.quantity, 0)} {items.length === 1 ? "Piece" : "Pieces"}
+                {cartCount(items)} {cartCount(items) === 1 ? "Ensemble" : "Ensembles"}
               </span>
             </div>
 
@@ -612,6 +628,7 @@ export default function CheckoutPage() {
                         <span>·</span>
                         <span>{formatPrice(product.price)}</span>
                       </div>
+                      <span className={styles.ensembleTag}>3-Piece Stitched</span>
 
                       <div className={styles.itemQtyControls}>
                         <button
@@ -694,7 +711,7 @@ export default function CheckoutPage() {
               )}
 
               <div className={styles.priceRow}>
-                <span>Standard Delivery in Pakistan</span>
+                <span>{expressShipping.label} in Pakistan</span>
                 <span className={styles.freeDeliveryPill}>
                   <span aria-hidden="true">✓</span> FREE
                 </span>
@@ -706,7 +723,7 @@ export default function CheckoutPage() {
               </div>
 
               <p className={styles.deliveryNote}>
-                Estimated delivery <strong>2–4 business days</strong> across all Pakistan cities.
+                Estimated delivery <strong>{expressShipping.estimate}</strong> across Pakistan.
               </p>
             </div>
           </aside>

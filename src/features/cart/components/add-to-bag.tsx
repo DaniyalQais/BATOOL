@@ -1,7 +1,8 @@
 "use client";
-import { useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import dynamic from "next/dynamic";
 import type { Product, Size } from "@/features/catalog/model/types";
+import { SizeGuide } from "@/features/catalog/components/size-guide";
 import {
   initialPurchaseOption,
   validPurchaseOption,
@@ -26,6 +27,10 @@ export function AddToBag({ product }: { product: Product }) {
   const selectionId = `${id}-selection`;
   const feedbackId = `${id}-feedback`;
   const selected = validPurchaseOption(product, size);
+
+  useEffect(() => () => {
+    if (addedTimeoutRef.current) clearTimeout(addedTimeoutRef.current);
+  }, []);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -81,6 +86,7 @@ export function AddToBag({ product }: { product: Product }) {
   return (
     <>
       <form className={styles.form} onSubmit={submit}>
+        <SizeGuide />
         <fieldset className={styles.options} aria-describedby={`${selectionId} ${feedbackId}`}>
           <legend>Select size</legend>
           <div className={`${styles.sizes} ${sizeError ? styles.sizesError : ""}`}>

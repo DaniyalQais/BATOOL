@@ -75,6 +75,37 @@
   font-size: 13px;
   margin-bottom: 0;
 }
+.ensemble {
+  margin: 0 0 20px;
+  padding: 16px 18px;
+  border-left: 2px solid var(--plum);
+  background: #eee7e1;
+}
+.ensemble p {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.ensemble span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.breakdown {
+  margin: 0 8px 18px;
+  font-size: 12px;
+}
+.breakdown div {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.breakdown dt { font-weight: 500; }
+.breakdown dd {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
 .disclosure {
   margin: 16px 0 28px;
   color: var(--muted);
