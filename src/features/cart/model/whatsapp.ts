@@ -1,5 +1,5 @@
 import { type CartLine } from "./cart.ts";
-import { getProductById } from "../../catalog/model/products.ts";
+import { getProductById } from "../../catalog/model/active-catalog.ts";
 import { formatPrice } from "../../../lib/format.ts";
 
 export const STORE_OWNER_WHATSAPP = process.env.NEXT_PUBLIC_STORE_WHATSAPP_NUMBER || "923004323811";

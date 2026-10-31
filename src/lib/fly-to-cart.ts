@@ -6,7 +6,7 @@
  */
 export function flyToCart(
   sourceEl: HTMLElement | null,
-  imageSlug?: string,
+  imageSlug?: string | null,
   onComplete?: () => void
 ) {
   if (typeof window === "undefined") {
@@ -24,7 +24,7 @@ export function flyToCart(
   // Find the closest img inside sourceEl or use sourceEl if it is an img
   const imgEl = sourceEl
     ? ((sourceEl instanceof HTMLImageElement ? sourceEl : sourceEl.querySelector("img")) as HTMLImageElement | null)
-    : (document.querySelector(imageSlug ? `img[src*="${imageSlug}"]` : "main img") as HTMLImageElement | null);
+    : imageSlug === null ? null : (document.querySelector(imageSlug ? `img[src*="${imageSlug}"]` : "main img") as HTMLImageElement | null);
 
   const imageSrc =
     imgEl?.currentSrc ||

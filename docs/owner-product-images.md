@@ -1,0 +1,114 @@
+# Owner main product images
+
+## Database configured; hosted image validation remains unverified
+
+The user applied **`supabase/migrations/20261030000500_owner_product_images.sql`** in the intended project's SQL Editor, including `begin` through `commit`, and supplied successful post-migration configuration results. Both buckets, image columns/constraints, receipt table/RLS, image policies, function definitions/ACLs, catalog policies/grants and existing revision support matched the reviewed migration. The global Storage limit was 50 MB. Six existing products had null image fields and positive revisions; an Owner mapping referenced an existing Auth user. These were user-run SQL/configuration inspections reviewed in chat, not actual-session permission tests or proof that every pre-existing value is unchanged. Do not rerun migrations 001–005 or blindly push migrations; SQL Editor execution does not automatically populate CLI migration history.
+
+The `validate-product-image` Edge Function is prepared locally, but deployment has not been confirmed. **Hosted decoding, actual Owner upload/attachment, Storage HTTP authorization, invalid-file rejection, CORS and public validated-image delivery remain unverified.** No remote files were uploaded, accounts provisioned, or legitimate remote products changed by the agent.
+
+This phase replaces the main image of one of the six existing products and edits its accessible alt text. It has no gallery, new-product, deletion, order, checkout/payment, or commission features. Existing local assets remain in place for products with no uploaded main image. Existing concept/demo disclosures remain; uploaded-image captions identify retained original fallback provenance rather than presenting it as the new photograph's origin. Campaign/editorial imagery remains separately managed local design content.
+
+## Why a trusted validator is necessary
+
+Bucket MIME restrictions and a browser decoder alone cannot enforce actual byte decoding: callers can bypass browser JavaScript and forge MIME labels. PostgreSQL Storage policies cannot decode JPEG/PNG/WebP. A Supabase Edge Function therefore independently decodes, bounds dimensions, strips metadata and re-encodes the image before issuing a protected validation receipt. Next.js remains `output: "export"`; there are no Next API routes, Server Actions, runtime Next server or changed Vercel hosting requirements. Supabase now needs an explicitly configured validator function in addition to Auth/Database/Storage. Uploads fail closed until that function is configured.
+
+The Edge runtime uses pinned `@imagemagick/magick-wasm@0.0.45` (Supabase recommends WASM rather than native Sharp in Edge Functions). The existing Node `sharp` dependency is reused for build verification/tests. The browser uses native image/canvas APIs; no application npm dependency was added. Edge dependencies and their lockfile are separate from the storefront bundle.
+
+## Storage and authorization
+
+- **`product-image-uploads`**: private staging; maximum **5 MiB**, JPEG/PNG/WebP only. Owner browser requests use their own Auth JWT and the public publishable key. The live protected `dashboard_roles` mapping, non-anonymous identity, owner ID and exact product/user/UUID path are checked by RLS. Paths are `products/<product-id>/<auth-user-uuid>/<random-uuid>.(jpg|png|webp)`; IDs are 0, 2, 3, 7, 8 and 11 only.
+- **`product-images`**: public, validated WebP variants only; maximum **5 MiB per object**. Browser identities, including Owner, cannot insert here. The trusted validator writes fresh immutable `products/<product-id>/<uploader-uuid>/<fresh-uuid>/{192.webp,384.webp,main.webp}` paths with `upsert:false`. Public URL retrieval is intentional; public object listing/metadata access is not granted. Validated objects are public as soon as generated, even before attachment/rebuild; do not use this workflow for confidential images.
+- Restrictive Storage policies prevent broad pre-existing permissive policies from granting insert/update/delete access to these buckets. No browser role may overwrite, move or delete these objects. Policies for other buckets are preserved; review custom restrictive policies for compatibility before application.
+- `public.product_image_assets` is a protected validation registry, not a gallery. Browser users cannot insert/update/delete receipts; only Owners can read them. `register_product_image_asset(...)` is executable only by `service_role`, checks the uploader's live Owner mapping again, and requires all output objects. No application user can self-certify dimensions or supply an arbitrary URL.
+- Products gain nullable `main_image_path`, `main_image_width`, `main_image_height`, and `image_alt`. A validated receipt FK, product-specific path constraint, coherent dimensions/alt checks, and revoked direct table writes protect those columns. A reference is a path inside the fixed bucket, never a caller-selected bucket, external URL, signed URL or arbitrary host.
+- `owner_attach_product_image(integer,integer,text,text)` verifies the live Owner mapping before validation, locks it and the product, compares the original `edit_revision`, then attaches only a receipt belonging to that product. It changes only those four image columns; existing triggers advance the shared revision. Concurrent detail, stock, image and alt edits conflict instead of silently replacing newer values. `PT409` requires reload/review. The earlier detail-save RPC cannot edit image columns.
+- The Edge Function explicitly verifies the bearer JWT through `auth.getUser()`, reads that user's role through RLS, checks it again before publishing outputs, and registration checks it again in the database. User metadata never grants permissions. Its privileged client is separate from the user's client and is instantiated only after validation and Owner checks.
+
+## File validation and browser flow
+
+The Owner selects a JPEG/PNG/WebP source up to **12 MiB**, with dimensions at least **384 × 384**, no side above **8192**, at most **24 megapixels**, and aspect ratio between **1:4 and 4:1**. Signature/header checks bound resource usage but are not treated as successful decoding. Native browser decoding is mandatory; canvas prepares a metadata-free WebP at up to **1600 pixels on its longest side** and at most 5 MiB. The preview shows original/prepared dimensions and sizes before upload. Animated inputs become a still frame; animation is not supported. Alt text must contain 1–240 nonblank Unicode characters without control characters; it is not invented from unconfirmed garment specifications.
+
+**Upload and save main image** uploads privately first, invokes trusted byte validation, then calls the attachment RPC with the revision from the loaded product. Server decoding independently checks format/dimensions and emits three WebP variants, regardless of client claims. **Save alt text only** uses the same revision-checked RPC against the current validated asset, without a new upload. There is no detach/delete button.
+
+Local preview URLs are revoked when replaced/unmounted. Image operations disable competing detail saves for that product. Session rechecks hide and disable the editor while preserving same-Owner in-memory drafts/preview; logout or denial clears them. An interrupted pipeline stops before its next attachment request. Reload explicitly discards unsaved details and previews. No automatic retry bypasses concurrency protection.
+
+## Failures, retention and orphan objects
+
+An upload/validation failure does not request attachment. A rejected attachment transaction preserves the previous database image. A lost response may mean attachment committed: the UI truthfully reports an uncertain outcome and requires a reload, rather than claiming nothing changed or deleting a potentially attached object. Conflicts/denials retain uploaded files and display reload guidance; when available the validated path is shown for trusted review.
+
+This phase deliberately retains raw staging uploads, partial validated outputs and unattached receipts. There is no automatic orphan garbage collection and no client delete permission. Failed uploads can incur storage costs; review them administratively. Receipt `attached_at` records first attachment and never resets, so an asset previously used by an export is not misclassified as unused merely because it is no longer the current main image.
+
+**Never automatically delete the previous image.** Old exports, cached pages and open bags may still reference it. Any later garbage-collection operation needs separate trusted review of actual object paths, current references, attachment history, retained exports and caches. Do not delete based only on current-product references, age, a failed request or a missing receipt: registration/attachment responses themselves may have been lost. Cleanup is not part of this implementation.
+
+## Static rendering and failure behavior
+
+The local Next loader remains local-only. Uploaded catalog images use native responsive `srcset` with the validated 192/384/main variants and project-bound public URLs; they never enter that loader or require a paid Storage transform service. Cards, detail pages, bag, checkout preview, quick-add and toasts use the same image reference. The existing responsive layout and local fallback assets remain intact. Uploaded images do not inherit the demo fallback's editorial crop/zoom.
+
+The build validates every attached main/thumbnail URL and actually decodes it using existing Sharp. Missing, oversized or corrupt uploaded imagery fails the Supabase-mode build; a local demo image is never silently substituted. Runtime image-load failure displays an accessible unavailable state. A failed primary image also does not trigger local-image fallback in the cart animation.
+
+Saving affects the database only. **Rebuild and publish** to update the static storefront; neither save button publishes. Published stock remains a build-time snapshot and demo checkout does not enforce it. The migration is not required for a build of the unchanged existing catalog: rows with no image columns (before migration 005) use local images. Once image columns exist, partial/invalid image data fails validation. Before setup, the dashboard explicitly marks uploads unconfigured while existing detail editing remains available.
+
+## Original setup procedure (new environments; do not rerun completed steps)
+
+Migration 005 is already applied to the configured BATOOL project. Steps 1–2 below describe setup for a new environment, not instructions to rerun the migration. Function runtime configuration and deployment remain pending confirmation.
+
+1. Confirm the intended BATOOL project against your existing local URL privately. Do not paste credentials into chat. Migrations 001–004 are already applied. **Run only the read-only `supabase/tests/product_images_preflight.sql` in SQL Editor first.** First result must contain no new-object conflicts. Verify required revision support and five RLS-enabled platform/catalog tables. Review all Storage/catalog policies and ensure there are no browser column-write grants. Stop on conflicts/custom behavior; do not drop existing objects or modify earlier migrations. Check the project's global Storage limit permits 5 MiB; do not weaken other restrictions.
+2. After review, manually run the entire **`20261030000500_owner_product_images.sql`** once in that project's SQL Editor, including its transaction. This creates both buckets; do not pre-create them separately. It does not upload files or alter existing product references. If it errors, stop, issue `rollback;` if needed, and reconcile; do not rerun earlier migrations or `db push` blindly. SQL Editor history is not automatically CLI migration history.
+3. Prepare the WASM asset **locally**, using Deno 2.5 or newer and the per-function config. From `supabase/functions/validate-product-image`:
+
+   ```powershell
+   deno task check
+   deno task prepare
+   ```
+
+   This resolves pinned dependencies and copies the pinned WASM into the ignored `assets/magick.wasm`. `supabase/config.toml` explicitly bundles this static file. Do not deploy a function missing this asset. `project_id="batool-local"` is just a local CLI identifier, not the remote project reference.
+4. In the intended project's **Edge Functions secrets/configuration**, set **`BATOOL_ALLOWED_ORIGINS`** to the exact trusted origins, comma-separated: your actual canonical HTTPS storefront origin and, if needed for testing, `http://localhost:3000`. No paths, trailing slashes or wildcards. Do not guess a production URL or add unknown preview domains. Non-browser CLI probes may omit Origin; they still require verified JWT and Owner authorization. The hosted runtime supplies `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY`; verify their availability through trusted administration, without printing values. Do not add the service key to `.env.local`, Vercel build variables, `NEXT_PUBLIC_*`, examples, source or browser code. The built-in anonymous key initializes only the user-scoped Edge client; all protected reads use its verified bearer session. Elevated credentials are used solely for validated output publication and registration.
+5. Once separately approved, publish **only this Edge Function** to the explicitly identified project (not the storefront). A trusted administrator with the CLI may run from the repository root:
+
+   ```powershell
+   supabase functions deploy validate-product-image --project-ref YOUR_CONFIRMED_PROJECT_REF
+   ```
+
+   The checked-in config disables the legacy gateway JWT check because the handler verifies users explicitly through Auth; it does not permit unauthenticated processing. Do not remove that explicit verification or replace it with decoded JWT claims. No function was deployed by the agent. Confirm WASM packaging, cold-start limits and CORS in a staging project before production use.
+6. Keep the existing `.env.local`/hosting `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`; no new browser key is needed. Restart the local dev app after setup and sign in as Owner at `/admin/login/`. Product data is loaded directly from Supabase. A later storefront build is `npm.cmd run build` with `CATALOG_SOURCE=supabase`; publish it only through a separately authorized workflow.
+
+## Safe remote verification (prepared, not executed)
+
+Use a separate staging/disposable Supabase project for real upload/attach/error cleanup tests; do not use legitimate BATOOL product images as disposable fixtures. Identify the intended project and inspect conflicts before any setup. No remote account creation, role changes, migrations or uploads are authorized to the agent by these instructions.
+
+### Read-only post-migration checks
+
+In SQL Editor inspect both bucket rows (`public`, `file_size_limit`, `allowed_mime_types`), the new Storage/receipt policies, and the two RPC definitions/ACLs. Verify `anon` cannot execute attachment, `authenticated` can execute attachment but cannot execute `register_product_image_asset`, and only the trusted service role can register. Check column-level grants as well as table grants. Existing anonymous active-product/variant reads and catalog direct-write denials must be preserved. SQL Editor administrator success is not proof of end-user authorization.
+
+### Safe actual-session denial probes on the intended project
+
+If the earlier temporary accounts were deleted, explicitly provision fresh Partner/unassigned test accounts manually using [the guarded workflow](product-editing-authorization-checks.md); never change the working Owner. After migration/function setup, run from the `package.json` directory:
+
+```powershell
+node --env-file=.env.local --experimental-strip-types scripts/verify-product-editing-denial.ts partner --image
+node --env-file=.env.local --experimental-strip-types scripts/verify-product-editing-denial.ts unassigned --image
+```
+
+Each prompts privately for that test identity and verifies its own session/UUID/role. It calls attachment with **product ID -1** and a nonexistent UUID image path, then the Edge validator with an invalid negative-ID pointer. Neither can target legitimate product data or upload any bytes even if authorization fails. Because Owner guards precede validation, require **403 / 42501 / Owner access required** from **both** endpoints for **each** identity. A missing function/deployment, validation error, expired JWT, generic 403, CORS error or stale revision is not a pass. The helper never uses a browser service key or Owner session; it attempts local sign-out. An anonymous request should fail attachment execute privilege and receive 401 from the validator without a bearer session. These probes do NOT establish real Storage HTTP upload permissions.
+
+### Full checks in an isolated test environment
+
+- Manually provision Owner, Partner and unassigned test identities through trusted administration. In each identity's own session, attempt a new uniquely named valid staging upload. Owner succeeds; Partner/unassigned/anonymous must receive actual Storage authorization denial, not MIME/path/duplicate-object validation errors. Use a tiny valid JPEG/PNG/WebP meeting dimensions and size limits. If an unexpected unauthorized upload succeeds, stop, record the isolated path and have the administrator review; never attach it or retry against legitimate objects.
+- Verify private raw images are not anonymously downloadable/listable. Verify public validated images are retrievable without a JWT. Browser writes to the validated public bucket, receipt registration, direct product-image column writes, overwrite/upsert, move and delete must fail, including for Owner. Preserve other buckets' behavior.
+- With Owner, preview and inspect size/dimensions; upload each supported source format. Reject disguised SVG/text, MIME mismatches, corrupt-but-valid-header files, unsupported types, oversized input and excessive dimensions. Do not infer actual byte validation from MIME rejection alone. Inspect decoded output and stripped metadata. The browser and Edge must independently reject invalid files.
+- Use a disposable product fixture to attach with the loaded revision, edit alt-only, and verify shared revision increments. Two tabs must conflict for image-versus-image and image-versus-detail/stock saves. Cross-product paths, external URLs, unvalidated objects and malformed alt must be rejected. User metadata `role=owner` must grant nothing; live demotion must stop subsequent operations.
+- Disconnect during upload, validation and attachment. Confirm truthful uncertainty, reload guidance, no automatic retry or deletion, and preserved prior published URLs. Test file-picker focus/session rechecks, logout, expired sessions and mobile layout. Verify new imagery in a static export and deliberate image-load failure without local fallback. Do not claim these checks from Node tests alone.
+- `supabase/tests/product_images.sql` is a **prepared rollback-only suite**, exclusively for an **empty disposable database after migrations 001,003,004,005, without seed 002**. It refuses existing catalog/asset/target-bucket rows, creates synthetic metadata-only fixtures and tests role denial, protected columns/receipts, immutable Storage policy behavior, attachment validation and revisions. It does not upload blobs or exercise the HTTP service/Edge decoder. Do not run it on BATOOL; if it errors in the disposable database, `rollback;`.
+- Delete only temporary test accounts through trusted Auth administration and verify their mappings are gone and the working Owner remains. Test-object cleanup is a separate trusted action on the isolated project, not a deletion feature in this app. Do not delete any previously published BATOOL image.
+
+## Execution record
+
+Before migration 005 was applied, **105 Node tests passed with no skips**, including actual pinned WASM decoding; `npm.cmd run typecheck` passed. Edge `deno task check` passed with isolated Deno 2.5.4, and the WASM static asset was prepared locally. That Supabase-mode production build read the database catalog without a demo fallback and exported six product routes using existing local imagery. It did not establish hosted validator success. A network-restricted build attempt failed closed; the permitted network-enabled retry succeeded. The Edge service-key environment name was absent from that checked static export.
+
+The user subsequently applied migration 005 and supplied the passing read-only configuration checks summarized above. During deployment preparation, the user reported Deno 2.9.8, Supabase CLI 2.122.0 and a passing `deno task check`. The prepared local WASM matched the pinned package bytes and passed `WebAssembly.validate`. The app's configured project hostname was privately matched against the migration target. The intended origins were confirmed as `http://localhost:3000` and `https://batool-lake.vercel.app`; configuring `BATOOL_ALLOWED_ORIGINS` and deploying the function have not been confirmed. No credentials or private verification exports are included here. See [commit readiness](commit-readiness.md) for the current local validation run and publication risks.
+
+Local Node tests cover path/identity/product binding, alt/dimensions, supported signatures, upload/validate/attach ordering, denied/interrupted pipelines, immutable options, conflicts, invalid receipts, exact authorization error classification and unavailable/corrupt build assets. The Edge HTTP handler is tested with injected Auth/Storage clients; no remote requests occur. The pinned WASM decoder is also exercised locally with real JPEG/PNG/WebP bytes and corrupt bodies when its isolated package is present. In a fresh checkout, that one optional test is skipped until the pinned test package is unpacked under `.tmp/magick-package/package` (use `npm pack @imagemagick/magick-wasm@0.0.45 --pack-destination=.tmp`, then extract it there); ordinary validation tests still run.
+
+No migration/Storage policy suite, real browser file upload, hosted validator, CORS, Storage HTTP permission, live image attachment or orphan cleanup has been executed against the configured project for this phase. Existing product-editing authorization passes remain valid historical evidence for migration 004, not proof of this new feature's policies.
+
+Official documentation consulted: [Storage access control](https://supabase.com/docs/guides/storage/security/access-control), [bucket limits](https://supabase.com/docs/guides/storage/buckets/creating-buckets), [Edge image processing](https://supabase.com/docs/guides/functions/examples/image-manipulation), [WASM asset bundling](https://supabase.com/docs/guides/functions/wasm), [Next Image](https://nextjs.org/docs/app/api-reference/components/image), and the installed Next.js static-export/image guides.

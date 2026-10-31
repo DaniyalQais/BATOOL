@@ -1,0 +1,8 @@
+project_id = "batool-local"
+
+[functions.validate-product-image]
+# JWTs are verified explicitly through Auth getUser(), including signing-key rotation.
+# This does NOT make the endpoint unauthenticated: the handler fails closed.
+verify_jwt = false
+entrypoint = "./functions/validate-product-image/index.ts"
+static_files = ["./functions/validate-product-image/assets/magick.wasm"]

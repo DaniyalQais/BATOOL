@@ -4,7 +4,7 @@ const pages = {
   size: {
     title: "Find your fit",
     text: [
-      "Our stitched 3-piece collection offers S, M, L and XL with interior seam allowance. Each ensemble includes a Stitched Shirt, Trouser & Dupatta. Choose your size on each product page.",
+      "Our stitched 3-piece preview offers demo sizes S, M, L and XL. Exact garment components, materials and tailoring details await brand confirmation. Choose your demo size on each product page.",
       "The client’s verified measurement chart will be added before launch. Please do not use these sample size labels as confirmed measurements.",
     ],
   },

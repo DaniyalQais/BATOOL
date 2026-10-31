@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback, useSyncExternalStore } from "react";
-import Image from "next/image";
+import { CatalogImage } from "@/components/ui/catalog-image";
+import type { UploadedProductImage } from "../../../supabase/functions/_shared/image-policy";
 import { formatPrice } from "@/lib/format";
 import styles from "./toast.module.css";
 
@@ -12,6 +13,7 @@ export interface ToastItem {
     name: string;
     price: number;
     imageSlug: string;
+    uploadedImage?: UploadedProductImage;
   };
   size?: string;
   message?: string;
@@ -103,8 +105,9 @@ function ToastCard({
     >
       {toast.product?.imageSlug ? (
         <div className={styles.thumbnailWrapper}>
-          <Image
+          <CatalogImage
             src={toast.product.imageSlug}
+            uploadedImage={toast.product.uploadedImage}
             alt={toast.product.name}
             width={48}
             height={64}

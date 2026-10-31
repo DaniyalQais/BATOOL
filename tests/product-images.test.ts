@@ -20,7 +20,7 @@ test("every product has decodable portrait variants and any reused photograph is
       const metadata = await image.metadata();
       assert.equal(metadata.format, "webp");
       assert.equal(metadata.width, width);
-      assert.equal(metadata.height, ["amanah", "layal"].includes(product.slug) ? width * 4 / 3 : width * 8 / 3);
+      assert.equal(metadata.height, width * 8 / 3);
       if (width === 384) {
         const hash = createHash("sha256").update(await image.raw().toBuffer()).digest("hex");
         if (pixels.has(hash)) {
@@ -47,12 +47,12 @@ test("product-detail frames match the decoded images without enlarging the sourc
   }
 });
 
-test("reused and generated sample images retain their provenance disclosure", () => {
+test("reused sample images retain their provenance disclosure", () => {
   for (const product of products) {
     const caption = productImagePresentation(product).caption;
     if ("imageNote" in product) {
       assert.equal(caption, product.imageNote);
-      assert.match(caption, /Reused .* sample portrait.*not separate product photography|AI-generated styling concept/);
+      assert.match(caption, /Reused .* sample portrait.*not separate product photography/);
     } else {
       assert.equal(caption, "Sample photography for design preview.");
     }
@@ -64,19 +64,20 @@ test("the public image directory contains only retained products and stitched ca
   expected.push(...[576, 864, 1152].map(width => `campaign-stitched-${width}.webp`));
   const actual = await readdir(new URL("../public/images/", import.meta.url));
   assert.deepEqual(actual.sort(), expected.sort());
-  assert.deepEqual((await readdir(new URL("../assets/source/", import.meta.url))).sort(), ["README.md", "amanah-formal-concept.png", "layal-formal-concept.png", "stitched-editorial.png"]);
+  assert.deepEqual((await readdir(new URL("../assets/source/", import.meta.url))).sort(), ["README.md", "stitched-editorial.png"]);
   const source = await sharp(fileURLToPath(new URL("../assets/source/stitched-editorial.png", import.meta.url))).metadata();
   assert.equal(source.width, 1536);
   assert.equal(source.height, 1024);
 });
 
-test("eight featured cards form two complete rows without repeated portraits in either row", async () => {
-  assert.equal(products.length, 8);
+test("six retained cards preserve their ordering and disclosed portrait reuse", async () => {
+  assert.equal(products.length, 6);
   const hashes = await Promise.all(products.map(async product => createHash("sha256")
     .update(await sharp(fileURLToPath(new URL(`../public/images/${product.imageSlug}-384.webp`, import.meta.url))).raw().toBuffer())
     .digest("hex")));
   for (let start = 0; start < hashes.length; start += 4) {
-    assert.equal(new Set(hashes.slice(start, start + 4)).size, 4);
+    const row = hashes.slice(start, start + 4);
+    assert.equal(new Set(row).size, row.length);
   }
   assert.deepEqual(products.slice(0, 4).map(product => product.slug), ["gulnaar", "meher", "saba", "noor"]);
   const meher = products.find(product => product.slug === "meher")!;

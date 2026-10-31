@@ -26,6 +26,7 @@ export default function Home() {
             A first look at BATOOL · Sample styles, imagery and prices for design
             preview. Concept imagery includes reused sample portraits.
             No orders or payments are enabled.
+            Stock is a build-time snapshot, may be unknown, and is not authoritative.
           </p>
         </section>
         <EditorialStory />

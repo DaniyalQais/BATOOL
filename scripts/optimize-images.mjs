@@ -36,19 +36,6 @@ for (const { name, panel } of [
     variants++;
   }
 }
-// Restored styling concepts support the stitched velvet/silk formal previews.
-for (const name of ["amanah", "layal"]) {
-  const formalSource = `assets/source/${name}-formal-concept.png`;
-  sourceBytes += (await stat(formalSource)).size;
-  for (const size of [192, 384]) {
-    const result = await sharp(formalSource)
-      .resize({ width: size, withoutEnlargement: true })
-      .webp({ quality: 82 })
-      .toFile(`public/images/${name}-${size}.webp`);
-    bytes += result.size;
-    variants++;
-  }
-}
 // Desktop previews contain only the retained stitched outfits.
 for (const width of [576, 864, 1152]) {
   const result = await sharp(source)

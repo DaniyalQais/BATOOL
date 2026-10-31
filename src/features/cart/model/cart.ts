@@ -1,4 +1,4 @@
-import { getProductById } from "../../catalog/model/products.ts";
+import { getProductById } from "../../catalog/model/active-catalog.ts";
 import type { Size } from "../../catalog/model/types.ts";
 export interface CartLine {
   readonly id: number;

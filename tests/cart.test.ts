@@ -30,7 +30,7 @@ test("cart preserves sizes, merges matching lines, and calculates totals", () =>
 });
 test("invalid IDs and unavailable sizes cannot enter the cart", () => {
   assert.deepEqual(addLine([], 999, "M"), []);
-  for (const id of [1, 4, 5, 6]) assert.deepEqual(addLine([], id, "M"), []);
+  for (const id of [1, 4, 5, 6, 9, 10]) assert.deepEqual(addLine([], id, "M"), []);
   assert.deepEqual(parseCart('[{"id":0,"size":"One size","quantity":1}]'), []);
 });
 test("stored state rejects malformed lines and migrates old quantities", () => {
@@ -59,9 +59,9 @@ test("quantity cap and no-op updates preserve snapshot identity", () => {
 });
 test("saved bags discard removed product IDs and keep retained products with their original sizes", () => {
   const cart = parseCart(JSON.stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(id => ({ id, size: "M", quantity: 1 }))));
-  assert.deepEqual(cart.map(line => line.id), [0, 2, 3, 7, 8, 9, 10, 11]);
-  assert.equal(cartCount(cart), 8);
-  assert.equal(cartSubtotal(cart), 86600);
+  assert.deepEqual(cart.map(line => line.id), [0, 2, 3, 7, 8, 11]);
+  assert.equal(cartCount(cart), 6);
+  assert.equal(cartSubtotal(cart), 61700);
 });
 test("Noor's stitched SKU supports sized purchases without reviving its retired option", () => {
   let cart = addLine([], 8, "M");

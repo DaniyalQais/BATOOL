@@ -10,6 +10,7 @@ import { categoryLabels } from "@/features/catalog/model/types";
 import { productImagePresentation } from "@/features/catalog/model/product-image-presentation";
 import styles from "./product-page.module.css";
 type Props = { params: Promise<{ slug: string }> };
+export const dynamicParams = false;
 export function generateStaticParams() {
   return catalogRepository.list().map(({ slug }) => ({ slug }));
 }
@@ -34,6 +35,7 @@ export default async function ProductPage({ params }: Props) {
         } as CSSProperties}>
           <ProductPhoto
             slug={p.imageSlug}
+            uploadedImage={p.uploadedImage}
             alt={`${p.name}: ${p.description}. ${p.imageNote ?? "Sample editorial imagery."}`}
             className={styles.photo}
             priority
@@ -49,7 +51,7 @@ export default async function ProductPage({ params }: Props) {
           <p className={styles.price}>{formatPrice(p.price)}</p>
           <div className={styles.ensemble}>
             <p>Complete Stitched 3-Piece Ensemble</p>
-            <span>Shirt, Trouser &amp; Dupatta</span>
+            <span>Concept styling; garment details await confirmation.</span>
           </div>
           <p className={styles.description}>{p.description}</p>
           <AddToBag key={p.id} product={p} />
@@ -59,18 +61,13 @@ export default async function ProductPage({ params }: Props) {
           </p>
           <div className={styles.details}>
             <details>
-              <summary>3-Piece Fabric Breakdown</summary>
-              <dl className={styles.breakdown}>
-                <div><dt>Shirt</dt><dd>Stitched shirt with the neckline and embroidery shown in the editorial styling.</dd></div>
-                <div><dt>Trouser</dt><dd>Coordinating stitched trouser to complete the silhouette.</dd></div>
-                <div><dt>Dupatta</dt><dd>Coordinating dupatta with complementary detailing.</dd></div>
-              </dl>
-              <p>Fabric composition, lining and embellishment specifications await brand confirmation.</p>
+              <summary>3-Piece Concept Details</summary>
+              <p>Illustrative styling for a stitched 3-piece ensemble. Exact garment components, fabric composition, lining and embellishment specifications await brand confirmation.</p>
             </details>
             <details>
               <summary>Tailoring &amp; Fit</summary>
               <p>
-                Ready to wear in {p.sizes.join(", ")}. Both the shirt and trouser arrive stitched, with a coordinating dupatta. Open the Size &amp; Fit Guide above for garment measurements and measuring advice.
+                Demo size options: {p.sizes.join(", ") || "none currently selectable"}. Open the Size &amp; Fit Guide above for sample measurements and measuring advice. Final garment details and fit await brand confirmation.
               </p>
               <p><Link href="/help/size/">Read size guidance</Link></p>
             </details>

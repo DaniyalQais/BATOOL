@@ -1,0 +1,22 @@
+.section { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); }
+.section h2 { font: 400 30px/1.2 var(--font-serif), serif; }
+.product { border: 1px solid var(--line); border-radius: 8px; padding: 20px; margin-top: 24px; }
+.product h3 { margin: 0 0 8px; font-size: 22px; }
+.reference { color: var(--muted); overflow-wrap: anywhere; font-size: 12px; }
+.fields { border: 0; padding: 0; margin: 20px 0 0; display: grid; gap: 18px; min-width: 0; }
+.legend { font-weight: 600; margin-bottom: 16px; }
+.field { display: grid; gap: 8px; }
+.field input, .field textarea { width: 100%; min-height: 44px; padding: 10px; border: 1px solid var(--line); background: white; color: var(--ink); border-radius: 4px; font: inherit; font-size: 16px; }
+.field textarea { resize: vertical; }
+.field textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.check { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.check input { width: 18px; height: 18px; accent-color: var(--plum); }
+.stock { min-width: 0; border: 1px solid var(--line); padding: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.size { min-width: 0; }
+.save { min-height: 46px; background: var(--plum); color: white; border: 0; border-radius: 4px; padding: 12px 20px; }
+.reload { min-height: 44px; border: 1px solid var(--plum); background: transparent; color: var(--plum); border-radius: 4px; padding: 10px 14px; }
+.section button:disabled { opacity: .6; cursor: wait; }
+.notice { border-left: 3px solid var(--accent); padding: 12px; background: var(--paper); }
+.imageFields { margin-top: 24px; border: 1px solid var(--line); padding: 16px; display: grid; gap: 14px; min-width: 0; }
+.imagePreview { display: block; max-width: 100%; width: 240px; max-height: 340px; object-fit: contain; background: var(--paper); }
+@media (max-width: 560px) { .product { padding: 14px; } .stock { grid-template-columns: 1fr; } }

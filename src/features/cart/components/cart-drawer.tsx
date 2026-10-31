@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { ProductPhoto } from "@/components/ui/product-photo";
-import { getProductById } from "@/features/catalog/model/products";
+import { getProductById } from "@/features/catalog/model/active-catalog";
 import { collectionHref } from "@/features/catalog/model/catalog";
 import { formatPrice } from "@/lib/format";
 import { useCartItems, cartActions } from "../model/store";
@@ -130,8 +130,8 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
                   <li key={key} data-cart-line={key} className={styles.item}
                     ref={(node) => { if (node) rows.current.set(key, node); else rows.current.delete(key); }}>
                     <Link href={`/products/${product.slug}/`} onNavigate={onClose} className={styles.thumbnail} aria-label={`View ${product.name}`}>
-                      <ProductPhoto slug={product.imageSlug} alt="" className={styles.photo} sizes="64px"
-                        framing={{ position: product.cardPosition, zoom: product.cardZoom }} />
+                      <ProductPhoto slug={product.imageSlug} uploadedImage={product.uploadedImage} alt="" className={styles.photo} sizes="64px"
+                        framing={product.uploadedImage ? undefined : { position: product.cardPosition, zoom: product.cardZoom }} />
                     </Link>
                     <div className={styles.itemDetails}>
                       <Link href={`/products/${product.slug}/`} onNavigate={onClose} className={styles.name}>{product.name}</Link>

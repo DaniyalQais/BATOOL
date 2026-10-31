@@ -11,13 +11,11 @@ const imageMetadata: Readonly<Record<string, {
   saba: { width: 384, height: 1024 },
   mira: { width: 384, height: 1024 },
   noor: { width: 384, height: 1024 },
-  amanah: { width: 384, height: 512 },
-  layal: { width: 384, height: 512 },
   zeenat: { width: 384, height: 1024 },
 };
 
-export function productImagePresentation(product: Pick<Product, "imageSlug" | "imageNote">) {
-  const image = imageMetadata[product.imageSlug];
+export function productImagePresentation(product: Pick<Product, "imageSlug" | "imageNote" | "uploadedImage">) {
+  const image = product.uploadedImage ?? imageMetadata[product.imageSlug];
   if (!image) throw new Error(`Missing product image dimensions: ${product.imageSlug}`);
 
   const ratio = image.width / image.height;
@@ -30,6 +28,8 @@ export function productImagePresentation(product: Pick<Product, "imageSlug" | "i
     desktopWidth,
     mobileWidth,
     sizes: `(max-width: 900px) min(calc(100vw - 32px), ${72 * ratio}svh, ${Math.min(image.width, 640 * ratio)}px), ${desktopWidth}px`,
-    caption: product.imageNote ?? "Sample photography for design preview.",
+    caption: product.uploadedImage
+      ? `Uploaded main image. Original demo fallback disclosure: ${product.imageNote ?? "Sample photography for design preview."}`
+      : product.imageNote ?? "Sample photography for design preview.",
   };
 }

@@ -1,3 +1,5 @@
+// Retired imagery failed the stitched-only review. Never assign these IDs to other products.
+export const reservedProductIds = [9, 10] as const;
 export const categories = ["Stitched"] as const;
 export type Category = (typeof categories)[number];
 export const categoryLabels: Record<Category, string> = {
@@ -9,6 +11,10 @@ export type SortOrder = "featured" | "low" | "high";
 export const availableSizes = ["S", "M", "L", "XL"] as const;
 export type Size = (typeof availableSizes)[number];
 export interface Product {
+  readonly uploadedImage?: import("../../../../supabase/functions/_shared/image-policy.ts").UploadedProductImage;
+  readonly currency?: "PKR";
+  readonly isDemo?: boolean;
+  readonly variants?: readonly { readonly size: Size; readonly stockQuantity: number | null }[];
   readonly id: number;
   readonly slug: string;
   readonly imageSlug: string;

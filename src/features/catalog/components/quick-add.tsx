@@ -1,6 +1,6 @@
 "use client";
 import { useId, useState, useRef, type FormEvent } from "react";
-import Image from "next/image";
+import { CatalogImage } from "@/components/ui/catalog-image";
 import { Modal } from "@/components/ui/modal";
 import { cartActions } from "@/features/cart/model/store";
 import { formatPrice } from "@/lib/format";
@@ -45,7 +45,7 @@ export function QuickAddDialog({
       }, 5000);
 
       // Trigger fly-to-cart animation and toast
-      flyToCart(imageRef.current, product.imageSlug);
+      flyToCart(imageRef.current, product.uploadedImage ? null : product.imageSlug);
       showToast({
         product,
         size: option as Size,
@@ -57,8 +57,9 @@ export function QuickAddDialog({
     <Modal label={`Quick Add: ${product.name}`} className={styles.dialog} onClose={onClose}>
       <p className={styles.eyebrow}>QUICK ADD</p>
       <div ref={imageRef} style={{ display: "none" }}>
-        <Image
+        <CatalogImage
           src={product.imageSlug}
+          uploadedImage={product.uploadedImage}
           alt={product.name}
           width={192}
           height={256}
@@ -86,7 +87,7 @@ export function QuickAddDialog({
           ))}
         </select>
         <p className={styles.selection}>
-          {selected ? `Selected: ${selected}` : "Choose a size to enable Add to demo bag."}
+          {!product.sizes.length ? "No selectable sizes in this catalog snapshot." : selected ? `Selected: ${selected}` : "Choose a size to enable Add to demo bag."}
         </p>
         <button
           className={styles.add}
@@ -136,7 +137,7 @@ export function QuickAdd({
       }, 5000);
 
       // Trigger fly-to-cart animation
-      flyToCart(mediaRef?.current || null, product.imageSlug);
+      flyToCart(mediaRef?.current || null, product.uploadedImage ? null : product.imageSlug);
 
       // Show toast
       showToast({

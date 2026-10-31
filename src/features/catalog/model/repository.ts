@@ -1,5 +1,5 @@
-import { products, getProductBySlug } from "./products";
-/** Build-time catalog boundary. A CMS/API adapter belongs here when commerce is added. */
+import { products, getProductBySlug } from "./active-catalog";
+/** Shared build-time snapshot, also used by cart reconciliation. */
 export const catalogRepository = {
   list: () => products,
   findBySlug: getProductBySlug,

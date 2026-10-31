@@ -73,7 +73,7 @@ export function AddToBag({ product }: { product: Product }) {
 
       // Trigger fly-to-cart from the primary product image to top-right cart icon
       const heroPhoto = document.querySelector(`img[alt*="${product.name}"]`) as HTMLElement | null;
-      flyToCart(heroPhoto || photoFigure, product.imageSlug);
+    flyToCart(heroPhoto || photoFigure, product.uploadedImage ? null : product.imageSlug);
 
       // Show toast: "Added to Bag - [Product Name]"
       showToast({
@@ -117,6 +117,8 @@ export function AddToBag({ product }: { product: Product }) {
               <>
                 <span aria-hidden="true">⚠️ </span>Please choose your size
               </>
+            ) : !product.sizes.length ? (
+              "No selectable sizes in this catalog snapshot."
             ) : selected ? (
               <>Selected: <strong>{selected}</strong></>
             ) : (
@@ -126,6 +128,7 @@ export function AddToBag({ product }: { product: Product }) {
         </fieldset>
         <button
           type="submit"
+          disabled={!product.sizes.length}
           className={`${styles.add} ${isAdded ? styles.added : ""}`}
           style={isAdded ? { background: "var(--plum)", color: "#fff" } : undefined}
         >

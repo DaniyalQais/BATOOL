@@ -2,12 +2,12 @@
 
 import { Suspense, useState, useId, type FormEvent } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { CatalogImage } from "@/components/ui/catalog-image";
 import { useSearchParams } from "next/navigation";
 import { useCartItems, cartActions } from "@/features/cart/model/store";
 import { cartCount, MAX_QUANTITY, type CartLine } from "@/features/cart/model/cart";
 import { checkoutTotals, expressShipping } from "@/features/cart/model/checkout";
-import { getProductById } from "@/features/catalog/model/products";
+import { getProductById } from "@/features/catalog/model/active-catalog";
 import { formatPrice } from "@/lib/format";
 import { showToast } from "@/components/ui/toast";
 import {
@@ -612,8 +612,9 @@ function Checkout() {
                   <li key={`${line.id}-${line.size}`} className={styles.itemRow}>
                     {/* 6. Product thumbnail in Order Summary 80x100 */}
                     <div className={styles.itemThumbWrapper}>
-                      <Image
+                      <CatalogImage
                         src={product.imageSlug}
+                        uploadedImage={product.uploadedImage}
                         alt={product.name}
                         width={80}
                         height={100}

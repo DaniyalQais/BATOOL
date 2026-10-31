@@ -17,7 +17,7 @@ export const ProductCard = memo(function ProductCard({
 }: {
   product: Product;
 }) {
-  const [selectedSize, setSelectedSize] = useState<Size>(() =>
+  const [selectedSize, setSelectedSize] = useState<Size | undefined>(() =>
     p.sizes.includes("M" as Size) ? ("M" as Size) : p.sizes[0]
   );
   const [isAdded, setIsAdded] = useState(false);
@@ -32,7 +32,7 @@ export const ProductCard = memo(function ProductCard({
     e.stopPropagation();
 
     // Add to cart
-    cartActions.add(p.id, selectedSize);
+    if (!selectedSize || !cartActions.add(p.id, selectedSize)) return;
 
     // 1. Button text -> "Added ✓" for 5 seconds then back
     setIsAdded(true);
@@ -49,7 +49,7 @@ export const ProductCard = memo(function ProductCard({
     }, 600);
 
     // 2. Product image fly-to-cart animation to top-right cart icon
-    flyToCart(mediaRef.current, p.imageSlug);
+    flyToCart(mediaRef.current, p.uploadedImage ? null : p.imageSlug);
 
     // 3. Toast top-right "Added to Bag - Gulnaar"
     showToast({
@@ -70,7 +70,8 @@ export const ProductCard = memo(function ProductCard({
         >
           <ProductPhoto
             slug={p.imageSlug}
-            framing={{ position: p.cardPosition, zoom: p.cardZoom }}
+            uploadedImage={p.uploadedImage}
+            framing={p.uploadedImage ? undefined : { position: p.cardPosition, zoom: p.cardZoom }}
             alt={`${p.name}: ${p.description}. ${p.imageNote ?? "Sample editorial imagery."}`}
             className={styles.photo}
             sizes="(max-width: 560px) calc(44vw - 7px), (max-width: 900px) calc(45vw - 7px), (max-width: 1600px) calc(22.5vw - 16.5px), 344px"
@@ -83,6 +84,7 @@ export const ProductCard = memo(function ProductCard({
             type="button"
             className={`${styles.quickAdd} ${isAdded ? styles.added : ""}`}
             onClick={handleAddToCart}
+            disabled={!selectedSize}
             aria-label={isAdded ? `Added ${p.name} to Bag` : `Add ${p.name} to Bag`}
           >
             <span>{isAdded ? "Added ✓" : "Add to Bag"}</span>
@@ -109,6 +111,7 @@ export const ProductCard = memo(function ProductCard({
           {p.name}
         </Link>
         <p className={styles.description}>{p.description}</p>
+        {!p.sizes.length && <p>No selectable sizes in this catalog snapshot.</p>}
         <ul className={styles.sizes} aria-label={`Available sizes for ${p.name}`}>
           {p.sizes.map((size) => (
             <li key={size}>

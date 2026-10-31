@@ -60,7 +60,7 @@ export function createCampaignSlides(images: CampaignImages = campaignImages): r
     id,
     eyebrow: "THE 3-PIECE EDIT",
     headline: "Your everyday. Beautifully dressed.",
-    supporting: "Stitched Shirt, Trouser & Dupatta. Ready to wear in S–XL.",
+    supporting: "Stitched 3-piece concepts in S–XL. Garment details await brand confirmation.",
     category: "Stitched",
     cta: "Shop 3-Piece",
     alt,

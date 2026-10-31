@@ -5,3 +5,10 @@ out/
 *.tsbuildinfo
 .env*
 !.env.example
+src/features/catalog/model/generated/
+supabase/functions/validate-product-image/assets/
+supabase/functions/validate-product-image/node_modules/
+.vercel/
+supabase/.temp/
+supabase/.branches/
+private-verification/

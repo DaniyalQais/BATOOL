@@ -25,7 +25,7 @@ export function EditorialStory() {
             Meet your next celebration look.
           </p>
           <small className={styles.note}>
-            Each ensemble includes a Stitched Shirt, Trouser &amp; Dupatta. Fabric and embellishment details will be confirmed by BATOOL.
+            Stitched 3-piece concepts. Garment components, fabric and embellishment details will be confirmed by BATOOL.
           </small>
           <Link href={collectionHref()} className="text-link">
             Explore 3-Piece <span aria-hidden="true">↗</span>
@@ -46,13 +46,13 @@ export function EditorialStory() {
           <Shirt className={styles.icon} size={48} strokeWidth={1} aria-hidden="true" focusable="false" />
           <span className={styles.number} aria-hidden="true">01</span>
           <h3>Complete <span className={styles.keepTogether}>3-Piece</span> Ensembles</h3>
-          <p>Stitched Shirt, Trouser &amp; Dupatta</p>
+          <p>Concept styling; garment details await confirmation</p>
         </div>
         <div className={styles.highlight}>
           <Scissors className={styles.icon} size={48} strokeWidth={1} aria-hidden="true" focusable="false" />
           <span className={styles.number} aria-hidden="true">02</span>
           <h3>Precision Tailoring</h3>
-          <p>Sizes S–XL with interior seam allowance</p>
+          <p>Demo sizes S–XL; final fit awaits confirmation</p>
         </div>
         <div className={styles.highlight}>
           <Gift className={styles.icon} size={48} strokeWidth={1} aria-hidden="true" focusable="false" />

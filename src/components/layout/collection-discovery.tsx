@@ -1,16 +1,14 @@
 import Link from "next/link";
 import { ProductPhoto } from "@/components/ui/product-photo";
 import { collectionHref } from "@/features/catalog/model/catalog";
-import { getProductBySlug } from "@/features/catalog/model/products";
 import styles from "./collection-discovery.module.css";
 
 export function CollectionDiscovery() {
-  const product = getProductBySlug("gulnaar")!;
   return (
     <section className={styles.section} aria-labelledby="shop-collections">
       <div className={styles.card}>
         <ProductPhoto
-          slug={product.imageSlug}
+          slug="gulnaar"
           alt="Gulnaar in dusty mauve, with embroidered shirt and draped dupatta. Sample editorial imagery."
           className={styles.photo}
           sizes="(max-width: 560px) 88vw, (max-width: 1600px) 90vw, 1440px"
@@ -19,7 +17,7 @@ export function CollectionDiscovery() {
           <p className={styles.eyebrow}>THE ART OF EVERYDAY DRESSING</p>
           <h2 id="shop-collections" className={styles.title}>The 3-Piece Collection</h2>
           <p className={styles.subtitle}>
-            Stitched shirt, trouser &amp; dupatta.<br />
+            Stitched 3-piece styling.<br />
             Beautifully complete. Effortlessly yours.
           </p>
           <Link href={collectionHref()} className={styles.explore}>
