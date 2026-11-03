@@ -124,12 +124,17 @@ export function CampaignHero({ slides, className = "" }: { slides: readonly Camp
               aria-label={`${index + 1} of ${slides.length}: ${slide.headline}`}
             >
               <div className={styles.copy}>
-                <p className={styles.eyebrow}>{slide.eyebrow}</p>
+                <div className={styles.eyebrowWrapper}>
+                  <span className={styles.eyebrowSparkle} aria-hidden="true">✦</span>
+                  <p className={styles.eyebrow}>{slide.eyebrow}</p>
+                </div>
                 <h1 className={styles.headline}>{slide.headline}</h1>
                 <p className={styles.supporting}>{slide.supporting}</p>
-                <Link className={`button ${styles.cta}`} href={collectionHref()} tabIndex={active ? 0 : -1}>
-                  {slide.cta} <span aria-hidden="true">↗</span>
-                </Link>
+                <div className={styles.ctaGroup}>
+                  <Link className={`button ${styles.cta}`} href={collectionHref()} tabIndex={active ? 0 : -1}>
+                    <span>{slide.cta}</span> <span className={styles.ctaArrow} aria-hidden="true">↗</span>
+                  </Link>
+                </div>
               </div>
               <div className={styles.visual} style={{
                   "--desktop-position": slide.desktop.position,

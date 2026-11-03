@@ -1,169 +1,277 @@
+/* Luxury Campaign Hero Section */
 .hero {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   width: 100%;
-  background: var(--plum);
+  background: #170b13;
+  background: radial-gradient(ellipse at 80% 45%, #442433 0%, #22101b 55%, #12070e 100%);
   color: var(--paper);
+  overflow: hidden;
 }
-.values {
-  max-width: 1600px;
-  margin-inline: auto;
-}
+
 .stage {
   display: grid;
   grid-area: 1 / 1;
   min-width: 0;
-  min-height: clamp(460px, 62svh, 680px);
+  min-height: clamp(540px, 72svh, 740px);
   touch-action: pan-y pinch-zoom;
 }
+
 .slide {
-  /* Keep the photograph's containing block on .hero so it also fills the control rows. */
   position: static;
   grid-area: 1 / 1;
   display: grid;
   align-items: center;
   min-width: 0;
-  padding: 64px 6% 32px;
+  padding: 80px 6% 90px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 650ms ease;
+  transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .slide[data-active="true"] {
   opacity: 1;
   pointer-events: auto;
   z-index: 1;
 }
+
+/* Atmospheric Editorial Imagery */
 .visual {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: var(--plum);
+  background: #170b13;
+  overflow: hidden;
 }
+
 .visual picture {
   display: contents;
 }
+
 .visual img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: var(--desktop-position);
+  transform: scale(1);
+  transition: transform 7s cubic-bezier(0.25, 1, 0.5, 1);
 }
+
+.slide[data-active="true"] .visual img {
+  transform: scale(1.025);
+}
+
+/* Editorial Gradient Masks */
 .visual::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, #21141ec9 0%, #21141eb8 32%, #21141e26 68%, transparent 100%),
-    linear-gradient(0deg, #21141ee6 0%, transparent 40%);
+    linear-gradient(90deg, #160a12 0%, rgba(22, 10, 18, 0.94) 32%, rgba(22, 10, 18, 0.5) 65%, transparent 88%),
+    linear-gradient(0deg, #160a12 0%, rgba(22, 10, 18, 0.6) 24%, transparent 55%);
 }
+
 @media (min-width: 601px) {
   .visual img {
-    width: 58%;
+    width: 62%;
     margin-left: auto;
-    mask-image: linear-gradient(90deg, transparent, #000 22%);
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.3) 14%, #000000 36%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.3) 14%, #000000 36%);
   }
   .visual::after {
     background:
-      linear-gradient(90deg, var(--plum) 24%, rgb(81 52 63 / 80%) 40%, transparent 78%),
-      linear-gradient(0deg, #21141ecc, transparent 45%);
+      linear-gradient(90deg, #160a12 0%, rgba(22, 10, 18, 0.92) 28%, rgba(68, 36, 51, 0.65) 50%, transparent 82%),
+      linear-gradient(0deg, #160a12 0%, rgba(22, 10, 18, 0.65) 20%, transparent 45%);
   }
 }
+
+/* Typography & Editorial Copy */
 .copy {
   position: relative;
-  z-index: 1;
-  max-width: 32rem;
+  z-index: 2;
+  max-width: 38rem;
 }
+
 .slide[data-active="true"] .copy {
-  animation: enter 600ms ease both;
+  animation: enter 650ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.eyebrow {
+
+.eyebrowWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding: 6px 14px;
+  background: rgba(212, 189, 168, 0.12);
+  border: 1px solid rgba(212, 189, 168, 0.28);
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.eyebrowSparkle {
+  color: #d4bda8;
   font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  margin-bottom: 18px;
+  line-height: 1;
 }
+
+.eyebrow {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #d4bda8;
+  line-height: 1;
+}
+
 .headline {
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(46px, 5vw, 76px);
-  line-height: 1.02;
-  letter-spacing: -0.8px;
-  max-width: 13ch;
+  font-size: clamp(48px, 5.5vw, 76px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  color: #faf7f2;
   margin-bottom: 20px;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
   text-wrap: balance;
 }
+
 .supporting {
-  max-width: 34ch;
-  font-size: 14px;
-  line-height: 1.65;
-  margin-bottom: 26px;
+  max-width: 36ch;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(250, 248, 244, 0.88);
+  margin-bottom: 34px;
+  letter-spacing: 0.01em;
 }
+
+.ctaGroup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .hero .cta {
-  gap: 24px;
-  max-width: 100%;
-  background: var(--paper);
-  color: var(--plum);
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 36px;
+  background: #faf7f2;
+  color: #361b28;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: all 220ms ease;
 }
+
 .hero .cta:hover {
-  background: #eee7e1;
+  background: #ffffff;
+  color: #1e0b15;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
+
+.ctaArrow {
+  display: inline-block;
+  font-size: 14px;
+  transition: transform 200ms ease;
+}
+
+.hero .cta:hover .ctaArrow {
+  transform: translate(3px, -3px);
+}
+
+/* Glassmorphism Floating Carousel Controls */
 .controls {
   position: relative;
   grid-area: 2 / 1;
   align-self: end;
   justify-self: center;
-  z-index: 2;
+  z-index: 10;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  max-width: calc(100% - 32px);
-  margin: 0 16px;
+  margin: 0 16px 24px;
+  padding: 6px 16px;
+  background: rgba(22, 10, 18, 0.68);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 30px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
+
 .selectors {
   display: flex;
+  gap: 4px;
 }
+
 .controls button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  min-width: 44px;
-  padding: 8px;
-  color: var(--paper);
+  min-height: 38px;
+  min-width: 38px;
+  padding: 6px 10px;
+  color: rgba(250, 248, 244, 0.75);
   border: 0;
+  background: transparent;
   font-size: 12px;
+  font-weight: 500;
+  border-radius: 19px;
+  cursor: pointer;
+  transition: all 160ms ease;
 }
+
 .controls button:hover {
-  background: #faf8f41a;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
 }
+
 .selectors button[aria-pressed="true"] {
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 7px;
+  color: #ffffff;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
 }
+
 .controls .playback {
-  gap: 8px;
-  min-width: 84px;
+  gap: 6px;
+  min-width: 78px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
 }
+
 .hero a:focus-visible,
 .controls button:focus-visible {
-  outline: 2px solid var(--paper);
-  outline-offset: 4px;
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
 }
+
 .disclosure {
   position: relative;
   grid-area: 3 / 1;
   align-self: end;
   justify-self: center;
   z-index: 2;
-  margin: 8px 16px 14px;
+  margin: 0 16px 12px;
   font-size: 10px;
+  letter-spacing: 0.06em;
+  color: rgba(250, 248, 244, 0.5);
   text-align: center;
 }
+
 .status {
   grid-column: 1;
   grid-row: 4;
@@ -172,46 +280,93 @@
   background: var(--plum);
   font-size: 11px;
 }
+
 .status:empty {
   padding: 0;
 }
+
+/* Luxury Hallmark Values Banner */
+.values {
+  background: #f7f4ef;
+  border-bottom: 1px solid #eae3d9;
+  padding: 18px 5%;
+  width: 100%;
+}
+
+.valuesInner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+}
+
+.valueItem {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #442a37;
+}
+
+.valueSparkle {
+  color: #c5a880;
+  font-size: 13px;
+  font-style: normal;
+}
+
 @keyframes enter {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Responsive Breakpoints */
 @media (min-width: 1001px) {
-  .slide { align-items: end; padding-top: 210px; }
-}
-@media (min-width: 601px) and (max-width: 1000px) {
-  .stage { min-height: 500px; }
-  .slide { align-items: end; padding-top: 190px; }
-  .headline { font-size: 54px; }
-  .visual::after {
-    background:
-      linear-gradient(90deg, #21141eb8 0%, #21141e66 48%, transparent 100%),
-      linear-gradient(0deg, #21141ef0 0%, #21141e80 48%, transparent 82%);
+  .slide {
+    align-items: center;
+    padding-left: 7%;
+    padding-right: 7%;
   }
 }
+
+@media (min-width: 601px) and (max-width: 1000px) {
+  .stage { min-height: 540px; }
+  .headline { font-size: 56px; }
+  .slide { padding: 60px 5% 70px; }
+}
+
 @media (max-width: 600px) {
-  .stage { min-height: clamp(500px, 74svh, 680px); }
+  .stage { min-height: clamp(520px, 78svh, 680px); }
   .slide {
     align-items: end;
-    padding: 260px 6% 24px;
+    padding: 220px 6% 36px;
   }
-  .visual img { object-position: var(--mobile-position); }
+  .visual img {
+    object-position: var(--mobile-position);
+    transform: none;
+  }
   .visual::after {
-    background: linear-gradient(0deg, #21141ef5 0%, #21141ed9 24%, #21141e66 58%, transparent 82%);
+    background:
+      linear-gradient(0deg, #160a12 0%, rgba(22, 10, 18, 0.94) 34%, rgba(22, 10, 18, 0.5) 65%, transparent 85%);
   }
-  .copy { max-width: 28rem; }
-  .eyebrow { font-size: 9px; margin-bottom: 12px; }
-  .headline { font-size: clamp(40px, 11vw, 54px); margin-bottom: 14px; max-width: 14ch; }
-  .supporting { font-size: 12px; max-width: 34ch; margin-bottom: 20px; }
-  .cta { min-height: 44px; padding: 13px 18px; }
-  .controls { gap: 4px; }
-  .controls .playback { min-width: 72px; gap: 4px; }
-  .disclosure { font-size: 9px; }
+  .copy { max-width: 30rem; }
+  .eyebrowWrapper { margin-bottom: 14px; padding: 5px 12px; }
+  .eyebrow { font-size: 9.5px; }
+  .headline { font-size: clamp(38px, 10vw, 50px); margin-bottom: 14px; }
+  .supporting { font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
+  .hero .cta { padding: 14px 28px; font-size: 11px; }
+  .controls { margin-bottom: 16px; padding: 4px 12px; gap: 4px; }
+  .controls button { min-height: 34px; min-width: 34px; font-size: 11px; }
+  .controls .playback { min-width: 68px; }
+  .values { padding: 14px 4%; }
+  .valueItem { font-size: 10px; letter-spacing: 0.16em; }
+  .valuesInner { gap: 10px 18px; }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .slide { transition: none; }
   .slide[data-active="true"] .copy { animation: none; }
+  .visual img { transition: none; transform: none !important; }
 }

@@ -7,11 +7,13 @@ export function Hero() {
     <>
       <CampaignHero slides={campaignSlides} />
       <div className={`values ${styles.values}`}>
-        <span>CONTEMPORARY SILHOUETTES</span>
-        <i>✧</i>
-        <span>A LOVE FOR DETAIL</span>
-        <i>✧</i>
-        <span>EFFORTLESSLY YOU</span>
+        <div className={styles.valuesInner}>
+          <span className={styles.valueItem}>Contemporary Silhouettes</span>
+          <i className={styles.valueSparkle} aria-hidden="true">✧</i>
+          <span className={styles.valueItem}>A Love For Detail</span>
+          <i className={styles.valueSparkle} aria-hidden="true">✧</i>
+          <span className={styles.valueItem}>Effortlessly You</span>
+        </div>
       </div>
     </>
   );
