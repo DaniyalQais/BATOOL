@@ -80,7 +80,18 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal label="shopping bag" onClose={onClose} className={styles.drawer}
-      header={<h2 className={styles.heading}>{showCheckout ? "Your order summary" : "Shopping bag"}</h2>}
+      header={
+        <div className={styles.headerWrapper}>
+          <h2 className={styles.heading}>
+            {showCheckout ? "Your order summary" : "Shopping bag"}
+          </h2>
+          {!showCheckout && items.length > 0 && (
+            <span className={styles.headerCountBadge}>
+              ({items.reduce((acc, curr) => acc + curr.quantity, 0)} {items.reduce((acc, curr) => acc + curr.quantity, 0) === 1 ? "Piece" : "Pieces"})
+            </span>
+          )}
+        </div>
+      }
       headerClassName={styles.header} closeButtonClassName={styles.closeButton}>
       <div className={styles.content} onFocusCapture={(event) => {
         focusedLine.current = (event.target as HTMLElement).closest<HTMLElement>('[data-cart-line]')?.dataset.cartLine ?? null;
@@ -163,17 +174,26 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
                   <li key={key} data-cart-line={key} className={styles.item}
                     ref={(node) => { if (node) rows.current.set(key, node); else rows.current.delete(key); }}>
                     <Link href={`/products/${product.slug}/`} onNavigate={onClose} className={styles.thumbnail} aria-label={`View ${product.name}`}>
-                      <ProductPhoto slug={product.imageSlug} uploadedImage={product.uploadedImage} alt="" className={styles.photo} sizes="64px"
+                      <ProductPhoto slug={product.imageSlug} uploadedImage={product.uploadedImage} alt="" className={styles.photo} sizes="76px"
                         framing={product.uploadedImage ? undefined : { position: product.cardPosition, zoom: product.cardZoom }} />
                     </Link>
                     <div className={styles.itemDetails}>
-                      <Link href={`/products/${product.slug}/`} onNavigate={onClose} className={styles.name}>{product.name}</Link>
+                      <div className={styles.itemHeaderRow}>
+                        <Link href={`/products/${product.slug}/`} onNavigate={onClose} className={styles.name}>{product.name}</Link>
+                        <button type="button" className={styles.textButton} data-action="remove"
+                          aria-label={`Remove ${product.name} ${line.size}`}
+                          onClick={(event) => {
+                            event.currentTarget.focus();
+                            intent.current = { line, before: items };
+                            cartActions.remove(line.id, line.size);
+                          }}>Remove</button>
+                      </div>
                       <div className={styles.itemMeta}>
                         <span className={styles.sizeBadge}>Size {line.size}</span>
                         <span className={styles.tag}>3-Piece Stitched</span>
                       </div>
-                      <p>Unit price: {formatPrice(product.price)}</p>
-                      <div className={styles.controls}>
+                      <p className={styles.unitPrice}>Unit price: {formatPrice(product.price)}</p>
+                      <div className={styles.controlsRow}>
                         <div className={styles.quantity} role="group" aria-label={`${product.name} ${line.size} quantity`}>
                           <button type="button" data-action="decrease"
                             aria-label={`Decrease ${product.name} ${line.size} quantity${line.quantity === 1 ? "; removes this line" : ""}`}
@@ -183,30 +203,33 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
                             aria-label={`Increase ${product.name} ${line.size} quantity`}
                             onClick={(event) => change(line, 1, event.currentTarget)}>+</button>
                         </div>
-                        <button type="button" className={styles.textButton} data-action="remove"
-                          aria-label={`Remove ${product.name} ${line.size}`}
-                          onClick={(event) => {
-                            event.currentTarget.focus();
-                            intent.current = { line, before: items };
-                            cartActions.remove(line.id, line.size);
-                          }}>Remove</button>
+                        <p className={styles.lineTotal}><span>Line total:</span> <strong>{formatPrice(cartSubtotal([line]))}</strong></p>
                       </div>
-                      <p className={styles.lineTotal}><span>Line total</span><strong>{formatPrice(cartSubtotal([line]))}</strong></p>
                     </div>
                   </li>
                 );
               })}
             </ul>
             <div className={styles.summary}>
-              <p className={styles.subtotal}><span>Subtotal</span><strong>{formatPrice(totals.subtotal)}</strong></p>
-              <div className={styles.serviceSummary}>
-                <p><span>Orders and payments</span><span>{checkoutWired ? "Check at checkout" : "Unavailable"}</span></p>
-                <p>{shippingDescription(settings.shipping)}</p>
-                <small>Delivery time awaiting confirmation · Pakistan</small>
+              <div className={styles.orderEstimateCard}>
+                <p className={styles.subtotal}><span>Subtotal</span><strong>{formatPrice(totals.subtotal)}</strong></p>
+                <div className={styles.serviceSummary}>
+                  <p><span>Orders and payments</span><span>{checkoutWired ? "Check at checkout" : "Unavailable"}</span></p>
+                  <p>{shippingDescription(settings.shipping)}</p>
+                  <small>Delivery time awaiting confirmation · Pakistan</small>
+                </div>
               </div>
               <button type="button" ref={checkoutButton} className={styles.primary} onClick={() => setCheckout(true)}>
-                {sampleBag ? "Review demo bag" : "Review bag"} <span aria-hidden="true">→</span>
+                <span>{sampleBag ? "Review demo bag" : "Review bag"}</span>
+                <span aria-hidden="true" className={styles.primaryArrow}>→</span>
               </button>
+              <div className={styles.trustBadges}>
+                <span>🚚 Fast 3–5 Days</span>
+                <span>•</span>
+                <span>📦 Parcel Inspection</span>
+                <span>•</span>
+                <span>🔄 7-Day Exchange</span>
+              </div>
             </div>
           </>
         )}
