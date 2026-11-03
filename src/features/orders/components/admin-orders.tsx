@@ -25,7 +25,7 @@ function Failure({ state, retry }: { state: Extract<Load<unknown>, { status: "er
 function Amounts({ order }: { order: OrderReport }) {
   return <dl className={styles.amounts}>
     {([["Subtotal", order.subtotal_minor], ["Shipping", order.shipping_minor], ["Tax", order.tax_minor], ["Discount", order.discount_minor], ["Total", order.total_minor]] as const)
-      .map(([label, amount]) => <div key={label}><dt>{label}</dt><dd>{formatPKR(amount)}</dd></div>)}
+      .map(([label, amount]) => <div key={label} className={label === "Total" ? styles.totalAmount : undefined}><dt>{label}</dt><dd>{formatPKR(amount)}</dd></div>)}
   </dl>;
 }
 function OwnerOrderDetails({ id, close }: { id: string; close(): void }) {
@@ -53,8 +53,20 @@ function OwnerOrderDetails({ id, close }: { id: string; close(): void }) {
       <CheckoutContext id={id} />
       <h4>Customer and delivery</h4>
       <dl className={styles.customer}>
-        <dt>Recipient</dt><dd>{state.data.customer.recipient_name}</dd>
-        <dt>Phone</dt><dd>{state.data.customer.phone}</dd>
+        <dt>Recipient</dt><dd><strong>{state.data.customer.recipient_name}</strong></dd>
+        <dt>Phone</dt><dd className={styles.phoneField}>
+          <span>{state.data.customer.phone}</span>
+          {state.data.customer.phone && (
+            <a
+              href={`https://wa.me/${state.data.customer.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Salam ${state.data.customer.recipient_name}, this is BATOOL regarding your order #${id.slice(0, 8)}. Total: ${formatPKR(state.data.order.total_minor)}. Please confirm your delivery address.`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.whatsappBtn}
+            >
+              💬 WhatsApp Customer
+            </a>
+          )}
+        </dd>
         <dt>Email</dt><dd>{state.data.customer.email ?? "Not provided"}</dd>
         <dt>Address</dt><dd>{[state.data.customer.address_line1, state.data.customer.address_line2, state.data.customer.city,
           state.data.customer.region, state.data.customer.postal_code, state.data.customer.country_code].filter(Boolean).join(", ")}</dd>
