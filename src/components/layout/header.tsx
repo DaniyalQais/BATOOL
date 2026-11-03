@@ -8,24 +8,33 @@ import styles from "./header.module.css";
 export function Header() {
   return (
     <>
-      <div className="announcement">
-        A NEW EXPRESSION OF EVERYDAY ELEGANCE <span>PAKISTAN · PKR</span>
+      <div className={`announcement ${styles.announcement}`}>
+        <div className={styles.announcementInner}>
+          <span className={styles.announcementMessage}>
+            A NEW EXPRESSION OF EVERYDAY ELEGANCE · READY-TO-WEAR LUXURY
+          </span>
+          <span className={styles.announcementRegion}>PAKISTAN · PKR</span>
+        </div>
       </div>
       <header className={styles.header}>
         <Link href="/" className={`wordmark ${styles.brand}`} aria-label="Batool home">
-          BATOOL<span>W E A R Y O U R S T O R Y</span>
+          <span className={styles.brandTitle}>BATOOL</span>
+          <span className={styles.brandTagline}>W E A R &nbsp;Y O U R &nbsp;S T O R Y</span>
         </Link>
         <MobileNavigation>
           <nav className={styles.links} aria-label="Main navigation">
             {stitchedCategories.map(category => (
-              <Link key={category} href={collectionHref(category)}>{category}</Link>
+              <Link key={category} href={collectionHref(category)} className={styles.navLink}>
+                <span>{category}</span>
+                <span className={styles.mobileChevron} aria-hidden="true">→</span>
+              </Link>
             ))}
           </nav>
         </MobileNavigation>
         <div className={styles.actions}>
           <Link href="/#catalog-search" className={styles.search} aria-label="Search clothing">
             <SearchIcon />
-            <span>Search</span>
+            <span className={styles.searchText}>Search</span>
           </Link>
           <CartTrigger />
         </div>

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import Link from "next/link";
 import styles from "./header.module.css";
 
 /** A nonmodal disclosure: normal Tab order, with no focus trap or scroll lock. */
@@ -67,6 +68,11 @@ export function MobileNavigation({ children }: { children: ReactNode }) {
         }}
       >
         {children}
+        <div className={styles.mobileHelpLinks}>
+          <Link href="/help/size/">📏 Size Guide</Link>
+          <Link href="/help/delivery/">🚚 Delivery &amp; Returns</Link>
+          <Link href="/help/contact/">💬 Concierge Care</Link>
+        </div>
       </div>
     </div>
   );
