@@ -28,22 +28,25 @@ function Checkout() {
   return <main id="main" className={styles.checkoutPage}>
     <div className={styles.container}>
       <div className={styles.topNav}><Link href="/" className={styles.brandWordmark}>BATOOL</Link></div>
-      <section className={styles.emptyCard}>
-        {local ? <LocalCheckout endpoint={endpoint} /> : productionEndpoint && (release || recovery) ?
-          <ProductionCheckout endpoint={productionEndpoint} release={release} recovery={recovery} /> : <>
-        <h1>{preview ? "Your bag preview" : "Checkout is unavailable"}</h1>
-        <p>Orders and payments are not enabled. COD, Easypaisa and JazzCash will become available after the required details and backend handling are ready.</p>
-        <p>PKR · Ready stock · {shippingDescription(settings.shipping)}</p>
-        {preview && <>
-          <p>This is a local bag summary. No order is created and no payment or message is sent.</p>
-          <ul>{items.map(line => <li key={line.id + "-" + line.size}>{getProductById(line.id)?.name ?? "Product"} · Size {line.size} · Qty {line.quantity}</li>)}</ul>
-          <p>Preview subtotal: {formatPrice(totals.subtotal)} · Shipping: {totals.shipping === null ? "Unconfigured" : formatPrice(totals.shipping)}</p>
-        </>}
-        <p><Link href="/help/delivery/">Delivery and policy information</Link></p>
-        <p><Link href="/help/contact/">Contact BATOOL</Link></p>
-        <Link href="/#collection" className={styles.emptyBtn}>Back to collection</Link>
-        </>}
-      </section>
+      {local ? (
+        <LocalCheckout endpoint={endpoint} />
+      ) : productionEndpoint && (release || recovery) ? (
+        <ProductionCheckout endpoint={productionEndpoint} release={release} recovery={recovery} />
+      ) : (
+        <section className={styles.emptyCard}>
+          <h1>{preview ? "Your bag preview" : "Checkout is unavailable"}</h1>
+          <p>Orders and payments are not enabled. COD, Easypaisa and JazzCash will become available after the required details and backend handling are ready.</p>
+          <p>PKR · Ready stock · {shippingDescription(settings.shipping)}</p>
+          {preview && <>
+            <p>This is a local bag summary. No order is created and no payment or message is sent.</p>
+            <ul>{items.map(line => <li key={line.id + "-" + line.size}>{getProductById(line.id)?.name ?? "Product"} · Size {line.size} · Qty {line.quantity}</li>)}</ul>
+            <p>Preview subtotal: {formatPrice(totals.subtotal)} · Shipping: {totals.shipping === null ? "Unconfigured" : formatPrice(totals.shipping)}</p>
+          </>}
+          <p><Link href="/help/delivery/">Delivery and policy information</Link></p>
+          <p><Link href="/help/contact/">Contact BATOOL</Link></p>
+          <Link href="/#collection" className={styles.emptyBtn}>Back to collection</Link>
+        </section>
+      )}
     </div>
   </main>;
 }
