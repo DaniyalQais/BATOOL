@@ -57,7 +57,6 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
       }
     } else if (focusedLine.current && !items.some((line) => cartLineKey(line) === focusedLine.current)
       && (document.activeElement === document.body || document.activeElement instanceof HTMLDialogElement)) {
-      // A storage update may also remove the line that contained keyboard focus.
       focusAfterRemoval(previousItems.current, focusedLine.current);
     }
     previousItems.current = items;
@@ -96,20 +95,39 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
           </div>
         ) : showCheckout ? (
           <div className={styles.checkout}>
-            <p className={styles.eyebrow}>01 Bag / 02 Review / 03 Delivery</p>
-            <h3 ref={checkoutHeading} tabIndex={-1}>Your edit, complete.</h3>
-            <p>Review your stitched ensembles before adding your delivery details.</p>
+            <div className={styles.stepTrack}>
+              <span className={styles.stepDone}>01 Bag</span>
+              <span className={styles.stepSep}>/</span>
+              <span className={styles.stepCurrent}>02 Review</span>
+              <span className={styles.stepSep}>/</span>
+              <span className={styles.stepUpcoming}>03 Delivery</span>
+            </div>
+            <h3 ref={checkoutHeading} tabIndex={-1} className={styles.checkoutTitle}>Your edit, complete.</h3>
+            <p className={styles.checkoutSubtitle}>Review your stitched ensembles before adding your delivery details.</p>
             <ul className={styles.reviewItems} aria-label="Order summary items">
               {items.map(line => {
                 const product = getProductById(line.id)!;
                 return (
-                  <li key={cartLineKey(line)}>
-                    <div>
-                      <strong>{product.name}</strong>
-                      <p>Size {line.size} · Qty {line.quantity}</p>
+                  <li key={cartLineKey(line)} className={styles.reviewItem}>
+                    <div className={styles.reviewThumb}>
+                      <ProductPhoto
+                        slug={product.imageSlug}
+                        uploadedImage={product.uploadedImage}
+                        alt=""
+                        className={styles.photo}
+                        sizes="64px"
+                        framing={product.uploadedImage ? undefined : { position: product.cardPosition, zoom: product.cardZoom }}
+                      />
+                    </div>
+                    <div className={styles.reviewDetails}>
+                      <strong className={styles.reviewName}>{product.name}</strong>
+                      <div className={styles.reviewMeta}>
+                        <span className={styles.sizeBadge}>Size {line.size}</span>
+                        <span className={styles.reviewQty}>Qty: {line.quantity}</span>
+                      </div>
                       <span className={styles.tag}>3-Piece Stitched</span>
                     </div>
-                    <span>{formatPrice(cartSubtotal([line]))}</span>
+                    <span className={styles.reviewPrice}>{formatPrice(cartSubtotal([line]))}</span>
                   </li>
                 );
               })}
@@ -124,7 +142,16 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
             <Link href={checkoutWired ? "/checkout/" : "/checkout/?preview=1"} className={styles.primary} onNavigate={onClose}>
               {checkoutWired ? "Continue to checkout" : "View bag preview"} <span aria-hidden="true">→</span>
             </Link>
-            <button type="button" className={styles.textButton} onClick={() => setCheckout(false)}>Back to bag</button>
+            <button type="button" className={styles.backBtn} onClick={() => setCheckout(false)}>
+              ← Back to bag
+            </button>
+            <div className={styles.trustBadges}>
+              <span>🚚 Fast 3–5 Days</span>
+              <span>•</span>
+              <span>📦 Parcel Inspection</span>
+              <span>•</span>
+              <span>🔄 7-Day Exchange</span>
+            </div>
           </div>
         ) : (
           <>

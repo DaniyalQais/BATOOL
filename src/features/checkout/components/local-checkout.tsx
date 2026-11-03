@@ -474,7 +474,16 @@ export function LocalCheckout({ endpoint, production = false, methods = ["cod", 
                 <li key={`${line.id}:${line.size}`} className={styles.itemRow}>
                   <div className={styles.itemThumbWrapper}>
                     {imageSrc ? (
-                      <img src={imageSrc} alt={product?.name ?? "Outfit"} className={styles.itemThumb} />
+                      <img
+                        src={imageSrc}
+                        alt={product?.name ?? "Outfit"}
+                        className={styles.itemThumb}
+                        onError={(e) => {
+                          if (product?.imageSlug && !e.currentTarget.src.includes(`${product.imageSlug}-192.webp`)) {
+                            e.currentTarget.src = `/images/${product.imageSlug}-192.webp`;
+                          }
+                        }}
+                      />
                     ) : (
                       <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px" }}>👗</div>
                     )}
@@ -526,9 +535,16 @@ export function LocalCheckout({ endpoint, production = false, methods = ["cod", 
       </div>
     )}
 
-    {recovery && <SupportRecovery endpoint={endpoint} accept={value => {
-      const recovered = client.adoptRecovery(value); setReceipt(recovered); setQuote(null); setBlocked(false);
-      setFeedback(recovered ? "Existing order recovered." : "The original attempt is durably closed. Your bag is preserved. Review a replacement quote.");
-    }} />}
+    {recovery && !receipt && (
+      <details className={styles.recoveryDetails}>
+        <summary className={styles.recoverySummary}>Need assistance recovering an interrupted order?</summary>
+        <div className={styles.recoveryContent}>
+          <SupportRecovery endpoint={endpoint} accept={value => {
+            const recovered = client.adoptRecovery(value); setReceipt(recovered); setQuote(null); setBlocked(false);
+            setFeedback(recovered ? "Existing order recovered." : "The original attempt is durably closed. Your bag is preserved. Review a replacement quote.");
+          }} />
+        </div>
+      </details>
+    )}
   </section>;
 }

@@ -1205,9 +1205,33 @@
 }
 
 /* Luxury Support & Recovery Section */
-.supportCard {
+.recoveryDetails {
   max-width: 680px;
   margin: 36px auto 0;
+  border-top: 1px solid #ede8e3;
+  padding-top: 20px;
+}
+
+.recoverySummary {
+  font-size: 13px;
+  color: #777777;
+  cursor: pointer;
+  padding: 6px 0;
+  user-select: none;
+  transition: color 150ms ease;
+}
+
+.recoverySummary:hover {
+  color: #111111;
+}
+
+.recoveryContent {
+  margin-top: 14px;
+}
+
+.supportCard {
+  max-width: 680px;
+  margin: 0 auto;
   padding: 24px 28px;
   background: #ffffff;
   border: 1px solid #eae5de;
