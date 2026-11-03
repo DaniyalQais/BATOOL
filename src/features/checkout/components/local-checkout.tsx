@@ -25,6 +25,7 @@ export function LocalCheckout({ endpoint, production = false, methods = ["cod", 
   const [method, setMethod] = useState<PaymentMethod>("cod");
   const [busy, setBusy] = useState(false); const [error, setError] = useState(""); const [blocked, setBlocked] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
 
   useEffect(() => { try {
     client.restore();
@@ -376,7 +377,11 @@ export function LocalCheckout({ endpoint, production = false, methods = ["cod", 
           <ul className={styles.itemsList}>
             {(quote?.lines ?? cart).map(line => {
               const product = getProductById(line.id);
-              const imageSrc = product?.imageSlug ? `/images/${product.imageSlug}/192.webp` : undefined;
+              const imageSrc = product?.uploadedImage
+                ? `${process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""}/storage/v1/object/public/product-images/${product.uploadedImage.path}`
+                : product?.imageSlug
+                ? `/images/${product.imageSlug}-192.webp`
+                : undefined;
               return (
                 <li key={`${line.id}:${line.size}`} className={styles.itemRow}>
                   <div className={styles.itemThumbWrapper}>

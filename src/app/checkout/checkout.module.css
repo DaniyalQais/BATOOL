@@ -1000,13 +1000,13 @@
   
   /* Order Summary on Top on mobile */
   .summarySection {
-    order: 1;
+    order: 2;
     position: static;
     padding: 20px 18px;
   }
   
   .formSection {
-    order: 2;
+    order: 1;
   }
   
   .fieldsGrid {
