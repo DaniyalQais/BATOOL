@@ -1,0 +1,12 @@
+// Read-only disposable diagnostics: fixed statuses/counts, never provider bodies.
+import {spawn} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {loadTarget,postgresEnvironment} from './hosted-verification-guard.mjs';
+const t=await loadTarget('.tmp/hosted-acceptance/target.json');if(t.projectRef!=='jcbxxgjrnkhgcspbscgb')throw Error();
+const sql=body=>new Promise((yes,no)=>{const p=spawn(process.env.BATOOL_HOSTED_PSQL,['-X','-q','-A','-t','-v','ON_ERROR_STOP=1'],{env:postgresEnvironment(t),windowsHide:true,stdio:['pipe','pipe','pipe']});let out='';p.stdout.on('data',x=>out+=x);p.stderr.on('data',()=>{});p.on('error',no);p.on('close',code=>code===0?yes(out.trim()):no(Error('Diagnostic SQL unavailable')));p.stdin.end(body);});
+const stats=await sql(`begin read only;select json_build_object('orders',(select count(*) from public.orders),'stock',(select stock_quantity from public.product_variants where product_id=0 and size='M'),'users',(select count(*) from auth.users),'roles',(select count(*) from public.dashboard_roles),'closed',(select bool_and(not enabled and not cod_ready and not easypaisa_manual_ready and not jazzcash_manual_ready and not zero_tax_reviewed) from batool_checkout_internal.readiness),'recovery_closed',(select bool_and(not enabled and verification_policy_ref is null) from batool_checkout_internal.recovery_controls),'recent_rate_windows',(select json_agg(json_build_object('window',window_start,'global',bucket='global','hits',hits) order by window_start) from batool_checkout_internal.rate_windows where window_start>=floor(extract(epoch from clock_timestamp())/60)-5));rollback;`);
+console.log(stats);
+for(const path of ['/functions/secure-checkout','/secrets']){
+ const r=await fetch('https://api.supabase.com/v1/projects/'+t.projectRef+path,{headers:{Authorization:`Bearer ${process.env.BATOOL_HOSTED_MANAGEMENT_TOKEN}`},signal:AbortSignal.timeout(20000)});const data=await r.json().catch(()=>null);
+ console.log(JSON.stringify({resource:path,status:r.status,...(path==='/functions/secure-checkout'&&r.ok?{version:data.version,verify_jwt:data.verify_jwt}:{}),...(path==='/secrets'&&r.ok&&Array.isArray(data)?{flags:data.filter(x=>['BATOOL_CHECKOUT_ENABLED','BATOOL_RECOVERY_ENABLED'].includes(x.name)).map(x=>({name:x.name,fields:Object.keys(x),falseDigest:x.digest===createHash('sha256').update('false').digest('hex'),falseValueHash:x.value===createHash('sha256').update('false').digest('hex'),falseValue:x.value==='false'}))}:{})}));
+}

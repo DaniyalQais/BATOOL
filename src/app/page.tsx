@@ -1,11 +1,15 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { Hero, EditorialStory } from "@/components/layout/editorial-sections";
 import { CollectionDiscovery } from "@/components/layout/collection-discovery";
 import { ProductCatalog, CatalogFallback } from "@/features/catalog/components/product-catalog";
 import { catalogRepository } from "@/features/catalog/model/repository";
 import styles from "./page.module.css";
+import { checkoutIsWired, isSampleItem, releaseCopy } from "@/features/checkout/model/release-copy";
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 export default function Home() {
   const products = catalogRepository.list();
+  const copy = releaseCopy(checkoutIsWired(), products.some(isSampleItem));
   return (
     <main id="main" className={styles.page}>
       <Hero />
@@ -23,10 +27,9 @@ export default function Home() {
             <ProductCatalog products={products} />
           </Suspense>
           <p className="sample-note">
-            A first look at BATOOL · Sample styles, imagery and prices for design
-            preview. Concept imagery includes reused sample portraits.
-            No orders or payments are enabled.
-            Stock is a build-time snapshot, may be unknown, and is not authoritative.
+            {copy.collection} {copy.availability}
+            {products.some(isSampleItem) && " Concept imagery includes reused sample portraits."}
+            {" Stock shown here is a build-time snapshot and is not authoritative."}
           </p>
         </section>
         <EditorialStory />

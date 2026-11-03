@@ -1,5 +1,7 @@
 # Owner product editing
 
+Local extension: [product creation and draft management](owner-product-drafts.md) is implemented with prepared migration 007. It supersedes the six-product-only editor restriction after separate migration review/application. The migration-004 behavior and executed evidence below describe the original editing foundation; they do not establish authorization for the new creation/save RPCs. New drafts have no fallback photography, and upload controls remain disabled while hosted validation is blocked.
+
 Main-image uploads are a separate phase: see [Owner product images](owner-product-images.md) for user-applied migration 005, trusted validation, Storage configuration, retention and verification. Its post-migration configuration checks passed; hosted validation and actual uploads remain unverified. Migration 004's confirmed checks do not establish actual image upload permissions.
 
 ## Implementation and scope

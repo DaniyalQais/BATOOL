@@ -1,4 +1,5 @@
 import type { Product, Size } from "./types.ts";
+import { isSampleItem } from "../../checkout/model/release-copy.ts";
 
 /** Every stitched piece requires an explicit size selection. */
 export function initialPurchaseOption(_product: Product): Size | null {
@@ -21,7 +22,7 @@ export function submitPurchase(
   return {
     success,
     message: success
-      ? `${product.name} (${size}) added to your demo bag.`
+      ? `${product.name} (${size}) added to your ${isSampleItem(product) ? "demo bag" : "bag"}.`
       : `The maximum quantity for ${product.name} (${size}) is already in your bag.`,
   };
 }

@@ -45,7 +45,7 @@ test("blank/overlong copy, unsupported IDs, revisions, missing/extra sizes are r
 test("current admin rows include inactive products and preserve provenance and Unknown stock", () => {
   assert.deepEqual(editorProduct(row()), product());
   const ids = [0, 2, 3, 8, 7, 11];
-  const data = ids.map(id => row({ ...product(), id }));
+  const data = ids.map(id => row({ ...product(), id, slug: `retained-${id}` }));
   assert.equal(editorProducts(data).length, 6);
   assert.throws(() => editorProducts(data.slice(1)));
   assert.throws(() => editorProducts([data[0], data[0], ...data.slice(2)]));

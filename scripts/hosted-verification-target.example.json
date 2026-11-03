@@ -1,0 +1,12 @@
+{
+  "name": "batool-checkout-acceptance-20261102",
+  "disposable": true,
+  "projectRef": "REPLACE_WITH_DISPOSABLE_REF",
+  "projectUrl": "https://REPLACE_WITH_DISPOSABLE_REF.supabase.co",
+  "dbHost": "db.REPLACE_WITH_DISPOSABLE_REF.supabase.co",
+  "dbPort": 5432,
+  "dbUser": "postgres",
+  "origin": "http://127.0.0.1:43871",
+  "schemaReadyThrough": "010",
+  "noProductionData": true
+}

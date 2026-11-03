@@ -9,6 +9,7 @@ import { showToast } from "@/components/ui/toast";
 import type { Product, Size } from "../model/types";
 import { initialQuickOption, submitQuickAdd, validQuickOption } from "../model/quick-add";
 import styles from "./quick-add.module.css";
+import { checkoutIsWired, isSampleItem, releaseCopy } from "../../checkout/model/release-copy";
 
 export function QuickAddDialog({
   product,
@@ -26,6 +27,7 @@ export function QuickAddDialog({
   const imageRef = useRef<HTMLDivElement>(null);
   const optionId = useId();
   const selected = validQuickOption(product, option);
+  const copy = releaseCopy(checkoutIsWired(), isSampleItem(product));
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -87,7 +89,7 @@ export function QuickAddDialog({
           ))}
         </select>
         <p className={styles.selection}>
-          {!product.sizes.length ? "No selectable sizes in this catalog snapshot." : selected ? `Selected: ${selected}` : "Choose a size to enable Add to demo bag."}
+          {!product.sizes.length ? "No selectable sizes in this catalog snapshot." : selected ? `Selected: ${selected}` : `Choose a size to enable ${copy.addLabel}.`}
         </p>
         <button
           className={styles.add}
@@ -95,13 +97,13 @@ export function QuickAddDialog({
           disabled={!selected}
           style={isAdded ? { background: "var(--plum)", color: "#fff" } : undefined}
         >
-          {isAdded ? "Added ✓" : "Add to demo bag"}
+          {isAdded ? "Added ✓" : copy.addLabel}
         </button>
         <p role="status" aria-live="polite" aria-atomic="true" className={styles.feedback}>
           {feedback.message}
         </p>
       </form>
-      <p className={styles.disclosure}>Design preview. No orders or payments will be submitted.</p>
+      <p className={styles.disclosure}>{copy.item} {copy.bagNotice}</p>
       <button type="button" className={styles.cancel} onClick={onClose}>Cancel / close</button>
     </Modal>
   );

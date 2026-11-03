@@ -2,6 +2,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { OwnerProducts } from "@/features/catalog/components/owner-products";
+import { AdminOrders } from "@/features/orders/components/admin-orders";
+import { OwnerSettings } from "@/features/settings/components/owner-settings";
+import { OwnerRecovery } from "@/features/checkout/components/owner-recovery";
 import { AdminPanel } from "./admin-panel.tsx";
 import { useAdminAccess } from "./use-admin-access.ts";
 import styles from "./admin.module.css";
@@ -26,7 +29,7 @@ export function AdminDashboard() {
     </div></>;
   } else content = <>
     <dl className={styles.details}><dt>Signed in as</dt><dd>{state.email}</dd><dt>Assigned role</dt><dd>{state.role === "owner" ? "Owner" : "Partner"}</dd></dl>
-    <p>{state.role === "owner" ? "Edit the six existing catalog products below. Orders are not enabled." : "Your role is reserved for future read access to order amounts, statuses and reports. Reporting is not enabled in this phase."}</p>
+    <p>{state.role === "owner" ? "Read orders, manage products and create inactive drafts below." : "Read order references, dates, amounts and statuses below."}</p>
     <div className={styles.actions}>
       <button className={styles.button} onClick={() => { void signOut(); }}>Sign out</button>
       <button className={styles.secondary} onClick={() => { void refresh(); }}>Check access again</button>
@@ -35,6 +38,9 @@ export function AdminDashboard() {
   const owner = state.status === "ready" && state.role === "owner";
   return <AdminPanel title={title}>
     {content}
+    {owner && <OwnerSettings key={state.status === "ready" ? state.email : ""} />}
+    {owner && <OwnerRecovery key={state.status === "ready" ? state.email : ""} />}
+    {state.status === "ready" && <AdminOrders key={`${state.email}-${state.role}`} role={state.role} />}
     <OwnerProducts enabled={owner} account={state.status === "ready" ? state.email : ""}
       clear={state.status === "signed-out" || state.status === "denied" || (state.status === "ready" && !owner)} />
   </AdminPanel>;

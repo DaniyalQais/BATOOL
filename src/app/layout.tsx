@@ -23,7 +23,7 @@ const serif = localFont({
   adjustFontFallback: "Times New Roman",
 });
 export const metadata: Metadata = {
-  metadataBase: new URL("https://batool-atelier.foamyelk1024.chatgpt.site"),
+  metadataBase: new URL("https://batool-lake.vercel.app"),
   title: {
     default: "BATOOL | Everyday, beautifully.",
     template: "%s | BATOOL",

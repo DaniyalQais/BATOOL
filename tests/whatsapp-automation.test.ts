@@ -6,14 +6,12 @@ import {
   buildCustomerThankYouMessage,
   getStoreOwnerWhatsAppUrl,
   getCustomerWhatsAppUrl,
-  STORE_OWNER_WHATSAPP,
 } from "../src/features/cart/model/whatsapp.ts";
 
 test("formatWhatsAppPhone normalizes Pakistani numbers to E.164 without plus", () => {
   assert.equal(formatWhatsAppPhone("03424834128"), "923424834128");
   assert.equal(formatWhatsAppPhone("+92 300 4323811"), "923004323811");
   assert.equal(formatWhatsAppPhone("0300-4323811"), "923004323811");
-  assert.equal(STORE_OWNER_WHATSAPP, "923004323811");
   assert.equal(formatWhatsAppPhone("3001234567"), "923001234567");
   assert.equal(formatWhatsAppPhone(""), "");
 });
@@ -56,8 +54,10 @@ test("URLs generate properly with wa.me domain and encoded text", () => {
     subtotal: 20000,
   };
 
-  const ownerUrl = getStoreOwnerWhatsAppUrl(dummyOrder);
-  assert.ok(ownerUrl.startsWith(`https://wa.me/${STORE_OWNER_WHATSAPP}?text=`));
+  const ownerUrl = getStoreOwnerWhatsAppUrl(dummyOrder, "923001234567");
+  assert.ok(ownerUrl.startsWith("https://wa.me/923001234567?text="));
+  assert.throws(() => getStoreOwnerWhatsAppUrl(dummyOrder, ""));
+  assert.throws(() => getCustomerWhatsAppUrl({ ...dummyOrder, phone: "" }));
 
   const customerUrl = getCustomerWhatsAppUrl(dummyOrder);
   assert.ok(customerUrl.startsWith("https://wa.me/923001234567?text="));

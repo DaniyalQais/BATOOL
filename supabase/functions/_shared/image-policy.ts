@@ -1,13 +1,13 @@
+import { catalogProductId } from "./catalog-policy.ts";
 export const IMAGE_UPLOAD_BUCKET = "product-image-uploads";
 export const IMAGE_BUCKET = "product-images";
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 export const MAX_SOURCE_BYTES = 12 * 1024 * 1024;
 export const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 export type ImageMime = (typeof IMAGE_TYPES)[number];
-export const imageProductIds = [0, 2, 3, 7, 8, 11] as const;
 const uuid = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-const mainPath = new RegExp(`^products/(0|2|3|7|8|11)/(${uuid})/(${uuid})/main\\.webp$`);
-const rawPath = new RegExp(`^products/(0|2|3|7|8|11)/(${uuid})/(${uuid})\\.(jpg|png|webp)$`);
+const mainPath = new RegExp(`^products/(0|[1-9][0-9]*)/(${uuid})/(${uuid})/main\\.webp$`);
+const rawPath = new RegExp(`^products/(0|[1-9][0-9]*)/(${uuid})/(${uuid})\\.(jpg|png|webp)$`);
 export class ImageValidationError extends Error {}
 export function imageDimensions(width: number, height: number, published = false) {
   if (!Number.isInteger(width) || !Number.isInteger(height) || width < 384 || height < 384 ||
@@ -25,12 +25,12 @@ export function imageAlt(value: string) {
 }
 export function assertImagePath(path: string, productId?: number) {
   const match = mainPath.exec(path);
-  if (!match || (productId !== undefined && Number(match[1]) !== productId)) throw new ImageValidationError("Invalid product-specific image path.");
+  if (!match || !catalogProductId(Number(match[1])) || (productId !== undefined && Number(match[1]) !== productId)) throw new ImageValidationError("Invalid product-specific image path.");
   return path;
 }
 export function assertUploadPath(path: string, productId: number, userId: string) {
   const match = rawPath.exec(path);
-  if (!match || Number(match[1]) !== productId || match[2] !== userId) throw new ImageValidationError("Invalid upload path or identity.");
+  if (!match || !catalogProductId(productId) || Number(match[1]) !== productId || match[2] !== userId) throw new ImageValidationError("Invalid upload path or identity.");
   return path;
 }
 export function newUploadPath(productId: number, userId: string, nonce: string, mime: ImageMime) {
@@ -91,3 +91,4 @@ export function imageHeader(bytes: Uint8Array, declared: string): { mime: ImageM
   imageDimensions(result.width, result.height);
   return result;
 }
+export const IMAGE_VALIDATOR_CONTRACT = "batool-product-image-v2";

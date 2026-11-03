@@ -6,9 +6,8 @@ import { ImageValidationError } from "../../../../supabase/functions/_shared/ima
 import { attachProductImage, ImageFlowError, prepareProductImage, uploadProductImage, type PreparedImage } from "../model/product-image-upload";
 import { editorFailure, type EditorProduct } from "../model/product-editor";
 import styles from "./owner-products.module.css";
-
-export function OwnerProductImage({ product, disabled, onBusy, onSaved }: {
-  product: EditorProduct; disabled: boolean; onBusy: (busy: boolean) => void; onSaved: (product: EditorProduct) => void;
+export function OwnerProductImage({ product, disabled, uploadAvailable = false, onBusy, onSaved }: {
+  product: EditorProduct; disabled: boolean; uploadAvailable?: boolean; onBusy: (busy: boolean) => void; onSaved: (product: EditorProduct) => void;
 }) {
   const [prepared, setPrepared] = useState<PreparedImage>();
   const [alt, setAlt] = useState(product.uploadedImage?.alt ?? "");
@@ -23,6 +22,7 @@ export function OwnerProductImage({ product, disabled, onBusy, onSaved }: {
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; selection.current++; URL.revokeObjectURL(previewUrl.current); }; }, []);
 
   async function select(file: File | undefined) {
+    if (!uploadAvailable) return;
     const token = ++selection.current;
     URL.revokeObjectURL(previewUrl.current); previewUrl.current = ""; setPreview(""); setPrepared(undefined); setValidatedPath(""); setNotice("");
     if (!file) return;
@@ -37,7 +37,7 @@ export function OwnerProductImage({ product, disabled, onBusy, onSaved }: {
     } finally { if (mounted.current && token === selection.current) { setBusy(false); onBusy(false); } }
   }
   async function save(upload: boolean) {
-    if (busy || disabled || reloadRequired || (upload && !prepared)) return;
+    if (busy || disabled || reloadRequired || (upload && (!uploadAvailable || !prepared))) return;
     setBusy(true); onBusy(true); setNotice(upload ? "Uploading, validating and attaching the image…" : "Saving image alt text…");
     try {
       const client = adminClient();
@@ -65,9 +65,11 @@ export function OwnerProductImage({ product, disabled, onBusy, onSaved }: {
   if (!product.imageSchemaReady) return <p className={styles.notice}>Image uploads are not configured. Apply the reviewed image migration and configure its validator first. Existing product editing remains available.</p>;
   return <fieldset className={styles.imageFields} disabled={disabled || busy} onKeyDown={event => { if (event.key === "Enter" && event.target instanceof HTMLInputElement) event.preventDefault(); }}>
     <legend>Main product image</legend>
+    <p role="status" className={styles.notice}>{uploadAvailable ? "Photos are independently decoded and validated by the trusted image service before attachment. Uploading a photo does not approve merchandise or enable checkout." : "Photo upload is disabled until this release and the trusted validator are ready. Keep drafts inactive. Existing immutable images are retained."}</p>
+    {!product.uploadedImage && product.managedDraft && <p>No image attached to this draft.</p>}
     {product.uploadedImage && <CatalogImage src="" uploadedImage={product.uploadedImage} alt={product.uploadedImage.alt} width={160} height={200} style={{ objectFit: "contain" }} />}
     <label className={styles.field}>Choose replacement image (JPEG, PNG or WebP)
-      <input type="file" accept="image/jpeg,image/png,image/webp" disabled={reloadRequired} onChange={event => { const file = event.target.files?.[0]; event.target.value = ""; void select(file); }} />
+      <input type="file" accept="image/jpeg,image/png,image/webp" disabled={!uploadAvailable || reloadRequired} onChange={event => { const file = event.target.files?.[0]; event.target.value = ""; void select(file); }} />
     </label>
     <p className={styles.reference}>At least 384 × 384; maximum 12 MiB, 8192 pixels per side and 24 megapixels. Preview is compressed locally; the server independently decodes and validates it. No upload happens until you confirm.</p>
     {prepared && <>
@@ -77,9 +79,9 @@ export function OwnerProductImage({ product, disabled, onBusy, onSaved }: {
       <p>Original: {prepared.originalWidth} × {prepared.originalHeight}, {(prepared.originalSize / 1024).toFixed(1)} KiB. Prepared: {prepared.width} × {prepared.height}, {(prepared.file.size / 1024).toFixed(1)} KiB.</p>
     </>}
     <label className={styles.field}>Image alt text (1–240 characters)
-      <input value={alt} maxLength={480} onChange={event => setAlt(event.target.value)} placeholder="Describe the visible outfit and relevant visual details" />
+      <input value={alt} disabled={!product.uploadedImage && !prepared} maxLength={480} onChange={event => setAlt(event.target.value)} placeholder="Describe the visible outfit and relevant visual details" />
     </label>
-    <button className={styles.save} type="button" disabled={!prepared || reloadRequired} onClick={() => { void save(true); }}>Upload and save main image</button>
+    <button className={styles.save} type="button" disabled={!uploadAvailable || !prepared || reloadRequired} onClick={() => { void save(true); }}>{uploadAvailable ? "Upload and save main image" : "Upload unavailable"}</button>
     {product.uploadedImage && !prepared && <button className={styles.reload} type="button" disabled={reloadRequired} onClick={() => { void save(false); }}>Save alt text only</button>}
     {notice && <p className={styles.notice} role="status" aria-live="polite">{notice}</p>}
     {validatedPath && reloadRequired && <p className={styles.reference}>Retained validated object for trusted administrative review: {validatedPath}. Reload before any retry; do not delete it automatically.</p>}

@@ -6,6 +6,7 @@ out/
 .env*
 !.env.example
 src/features/catalog/model/generated/
+src/features/settings/model/generated/
 supabase/functions/validate-product-image/assets/
 supabase/functions/validate-product-image/node_modules/
 .vercel/

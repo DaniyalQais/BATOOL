@@ -12,6 +12,7 @@ import { flyToCart } from "@/lib/fly-to-cart";
 import { showToast } from "@/components/ui/toast";
 import { cartActions } from "../model/store";
 import styles from "./add-to-bag.module.css";
+import { isSampleItem } from "../../checkout/model/release-copy";
 
 const CartDrawer = dynamic(() => import("./cart-drawer"));
 
@@ -86,7 +87,7 @@ export function AddToBag({ product }: { product: Product }) {
   return (
     <>
       <form className={styles.form} onSubmit={submit}>
-        <SizeGuide />
+        <SizeGuide sample={isSampleItem(product)} />
         <fieldset className={styles.options} aria-describedby={`${selectionId} ${feedbackId}`}>
           <legend>Select size</legend>
           <div className={`${styles.sizes} ${sizeError ? styles.sizesError : ""}`}>

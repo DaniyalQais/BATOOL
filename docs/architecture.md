@@ -1,8 +1,16 @@
 # BATOOL architecture and next steps
 
+[Owner business settings](owner-business-settings.md) add a second, explicitly allowlisted build-time public snapshot. Raw business settings and separate private notification recipients are Owner-only in PostgreSQL; writes require live Owner checks and expected revisions. Public contacts and approved text require rebuilding/publishing. All shopper payment methods remain unavailable, and checkout is now a bag summary/unavailable notice with no submission controls. Earlier demo-checkout verification below describes the prior preview, not live order handling.
+
+Shipping coverage stays Pakistan-wide. The shipping document has an explicit mode and integer paisa fee: unconfigured/null initially, free/zero by Owner choice, or flat-rate/nonnegative entered fee. Public shipping text uses the build snapshot and requires rebuilding/publishing after settings changes. Future order creation must read trusted backend settings and snapshot the charged fee in the immutable `orders.shipping_minor` column; historical orders never derive their charge from current settings. No checkout endpoint is added.
+
 ## Supabase catalog phase
 
 See [catalog setup and verification](supabase-catalog.md). Next configuration prepares one validated public snapshot from anonymous Supabase reads before compilation; the repository, pages, cart reconciliation, totals and demo checkout share it. Build-only SDK/configuration code never enters client imports. Missing configuration and read failures stop builds. Offline demo mode is explicit. The static export remains in `out/`, with no production Next.js server required. Database changes require rebuilding and publishing; stock is not live or authoritative. RLS and connection checks require the intended database and are not implied by offline tests. The migrations add only catalog tables and their read policies, not commerce services.
+
+## Order database foundation and read-only dashboard
+
+The [order database foundation](order-foundation.md) in migration 006 was applied manually by the user and passed supplied configuration inspection. The local `/admin/` Orders section reads through the existing signed-in browser client: Partner queries only the report table; Owner can load private customer/items/history details after a fresh role check. Pagination, filters and exact bigint paisa formatting operate without embedding order data in static HTML. The physically separated tables, RLS, immutable snapshots, audit and retry identities are not connected to checkout. All order writes remain unavailable to application roles; no real intake, notification, deployment or commission feature is added. Isolated UI/data tests pass, while disposable SQL execution and actual Auth-session tests remain pending. The document defines future atomic pricing/stock/idempotency requirements and the decisions still needed before checkout.
 
 ## Phase 1: component foundation
 

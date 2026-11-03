@@ -5,6 +5,10 @@ import { ownerCatalog } from "../model/owner-catalog";
 import { editorFailure, productDraft, type EditorProduct, type ProductDraft } from "../model/product-editor";
 import { availableSizes } from "../model/types";
 import { OwnerProductImage } from "./owner-product-image";
+import { OwnerDraftCreate } from "./owner-draft-create";
+import { activationRequirements } from "../model/product-creation";
+import { productMediaReleased, trustedValidatorReady } from "../model/product-media-readiness";
+import { OwnerMerchandiseApproval } from "./owner-merchandise-approval";
 import styles from "./owner-products.module.css";
 
 type Notice = { kind: "saving" | "success" | "error"; text: string; reloadRequired?: boolean };
@@ -20,6 +24,15 @@ const empty = (): EditorState => ({ account: "", products: [], drafts: {}, notic
 export function OwnerProducts({ enabled, account, clear }: { enabled: boolean; account: string; clear: boolean }) {
   const [state, setState] = useState<EditorState>(empty);
   const [imageBusy, setImageBusy] = useState<Record<number, boolean>>({});
+  const [creating, setCreating] = useState(false);
+  const [mediaReady, setMediaReady] = useState(false);
+  useEffect(() => {
+    let current = true; setMediaReady(false);
+    if (enabled && productMediaReleased()) void adminClient().functions.invoke("validate-product-image", { method: "GET" })
+      .then(({ data, error }) => { if (current) setMediaReady(!error && trustedValidatorReady(data)); })
+      .catch(() => { if (current) setMediaReady(false); });
+    return () => { current = false; };
+  }, [enabled, account, state.imageGeneration]);
   const current = useRef(state); current.current = state;
   const generation = useRef(0);
   const pending = useRef(new Map<number, number>());
@@ -84,10 +97,13 @@ export function OwnerProducts({ enabled, account, clear }: { enabled: boolean; a
   }
 
   const loading = state.loading || state.account !== account;
-  const saving = Object.values(state.notices).some(n => n.kind === "saving") || Object.values(imageBusy).some(Boolean);
+  const saving = creating || Object.values(state.notices).some(n => n.kind === "saving") || Object.values(imageBusy).some(Boolean);
   return <section hidden={!enabled} className={styles.section} aria-labelledby="owner-products-title">
     <h2 id="owner-products-title">Products</h2>
-    <p>Current database values, including inactive products. Unknown stock is unconfirmed; zero means explicitly out of stock. Stock is not reserved or enforced by the demo checkout.</p>
+    <p>Current database values, including inactive products. Unknown stock is unconfirmed; zero means explicitly out of stock. The catalog does not reserve stock. Secure checkout validates known per-size stock and deducts it only when an order commits.</p>
+    <OwnerDraftCreate enabled={enabled && !loading} clear={clear} schemaReady={state.products.length > 0 && state.products.every(product => product.draftSchemaReady)} onBusy={setCreating}
+      onSaved={product => setState(previous => ({ ...previous, products: [product, ...previous.products.filter(p => p.id !== product.id)],
+        drafts: { ...previous.drafts, [product.id]: productDraft(product) } }))} />
     <button className={styles.reload} disabled={loading || saving} onClick={() => { if (!pending.current.size) void load(account); }}>Reload products (discards unsaved edits)</button>
     {loading && <p role="status">Loading current database products…</p>}
     {state.error && <p role="alert" className={styles.notice}>{state.error}</p>}
@@ -95,8 +111,10 @@ export function OwnerProducts({ enabled, account, clear }: { enabled: boolean; a
       const draft = state.drafts[product.id];
       const notice = state.notices[product.id];
       const busy = notice?.kind === "saving";
+      const missing = activationRequirements(product, draft);
       return <form key={product.id} hidden={loading} className={styles.product} onSubmit={event => { void save(event, product); }} aria-busy={busy || imageBusy[product.id]}>
         <h3>{product.name}</h3>
+        <p>{product.archived ? "Archived (inactive)" : product.active ? "Active for the next build" : "Inactive draft"}. Saving does not publish; new public routes require rebuilding and deployment.</p>
         <p className={styles.reference}>/{product.slug}/ · {product.isDemo ? "Demo product" : "Catalog product"}</p>
         {product.imageNote && <p className={styles.reference}>{product.imageNote}</p>}
         <fieldset className={styles.fields} disabled={busy || imageBusy[product.id] || loading || !enabled}>
@@ -104,7 +122,16 @@ export function OwnerProducts({ enabled, account, clear }: { enabled: boolean; a
           <label className={styles.field}>Product name<input value={draft.name} required onChange={e => change(product.id, { name: e.target.value })} /></label>
           <label className={styles.field}>Description<textarea value={draft.description} required rows={4} onChange={e => change(product.id, { description: e.target.value })} /></label>
           <label className={styles.field}>Price (PKR)<input value={draft.price} required inputMode="decimal" placeholder="8950.00" onChange={e => change(product.id, { price: e.target.value })} /></label>
-          <label className={styles.check}><input type="checkbox" checked={draft.active} onChange={e => change(product.id, { active: e.target.checked })} /> Active in the next storefront build</label>
+          {product.draftSchemaReady && <>
+            <label className={styles.field}>Collection<select value={draft.subcategory ?? ""} onChange={event => change(product.id, { subcategory: event.target.value || null })}>
+              <option value="">Not selected</option>{["Daily Pret", "Festive Edit", "Luxury Formals"].map(value => <option key={value}>{value}</option>)}
+            </select></label>
+            <label className={styles.field}>Card label<input value={draft.tag ?? ""} maxLength={80} onChange={event => change(product.id, { tag: event.target.value || null })} /></label>
+            <label className={styles.field}>Card accent color (#RRGGBB)<input value={draft.color ?? ""} placeholder="#51343f" onChange={event => change(product.id, { color: event.target.value || null })} /></label>
+            <label className={styles.check}><input type="checkbox" checked={draft.archived ?? false} onChange={event => change(product.id, { archived: event.target.checked, ...(event.target.checked ? { active: false } : {}) })} /> Archive (keep inactive; retain product and images)</label>
+          </>}
+          {missing.length > 0 && <div className={styles.notice}><p>Before activation:</p><ul>{missing.map(message => <li key={message}>{message}</li>)}</ul></div>}
+          <label className={styles.check}><input type="checkbox" disabled={!draft.active && missing.length > 0} checked={draft.active} onChange={e => change(product.id, { active: e.target.checked })} /> Active in the next storefront build</label>
           <fieldset className={styles.stock}><legend>Stock by size</legend>
             {availableSizes.map(size => <div key={size} className={styles.size}>
               <strong>{size}</strong>
@@ -117,14 +144,20 @@ export function OwnerProducts({ enabled, account, clear }: { enabled: boolean; a
           </fieldset>
           <button className={styles.save} type="submit" disabled={notice?.reloadRequired}>{busy ? "Saving…" : "Save product"}</button>
         </fieldset>
-        <OwnerProductImage key={`${product.id}-${state.imageGeneration}`} product={product}
+        <OwnerProductImage key={`${product.id}-${state.imageGeneration}`} product={product} uploadAvailable={mediaReady}
           disabled={busy || loading || !enabled || Boolean(notice?.reloadRequired)}
           onBusy={value => setImageBusy(previous => ({ ...previous, [product.id]: value }))}
           onSaved={saved => {
             if (!active.current) return;
             // Keep unsaved detail drafts; the new shared revision protects subsequent saves.
-            setState(previous => ({ ...previous, products: previous.products.map(p => p.id === saved.id ? saved : p) }));
+            setState(previous => ({ ...previous, products: previous.products.map(p => p.id === saved.id ? saved : p),
+              drafts: { ...previous.drafts, [saved.id]: { ...previous.drafts[saved.id], active: saved.active } } }));
           }} />
+        <OwnerMerchandiseApproval key={`${account}-${product.id}-${state.imageGeneration}`} product={product} enabled={mediaReady}
+          disabled={busy || loading || !enabled || Boolean(imageBusy[product.id]) || Boolean(notice?.reloadRequired)}
+          dirty={JSON.stringify(draft) !== JSON.stringify(productDraft(product))}
+          onBusy={value => setImageBusy(previous => ({ ...previous, [product.id]: value }))}
+          onSaved={saved => { if (active.current) setState(previous => ({ ...previous, products: previous.products.map(p => p.id === saved.id ? saved : p) })); }} />
         {notice?.text && <p className={styles.notice} role={notice.kind === "error" ? "alert" : "status"} aria-live="polite">{notice.text}</p>}
       </form>;
     })}

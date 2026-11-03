@@ -3,12 +3,14 @@ import { corsHeaders } from "@supabase/supabase-js/cors";
 import type { DecodedImage } from "./decode-product-image.ts";
 import { ImageDecoderUnavailable } from "./decode-product-image.ts";
 import { assertUploadPath, IMAGE_BUCKET, IMAGE_UPLOAD_BUCKET, IMAGE_TYPES, MAX_UPLOAD_BYTES, ImageValidationError, type ImageMime } from "./image-policy.ts";
+import { IMAGE_VALIDATOR_CONTRACT } from "./image-policy.ts";
 
 export interface ImageValidatorPorts {
   configured: boolean; allowedOrigins: string[];
   caller: (authorization: string) => SupabaseClient;
   trusted: () => SupabaseClient | undefined;
   decode: (bytes: Uint8Array, mime: ImageMime) => Promise<DecodedImage>;
+  ready?: () => Promise<void>;
 }
 export async function handleProductImage(request: Request, ports: ImageValidatorPorts): Promise<Response> {
   const origin = request.headers.get("Origin");
@@ -17,12 +19,12 @@ export async function handleProductImage(request: Request, ports: ImageValidator
   if (origin && allowed.includes(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
     headers["Access-Control-Allow-Headers"] = corsHeaders["Access-Control-Allow-Headers"];
-    headers["Access-Control-Allow-Methods"] = "POST, OPTIONS";
+    headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
   }
   const reply = (status: number, body: Record<string, unknown>) => new Response(JSON.stringify(body), { status, headers });
   if (origin && !allowed.includes(origin)) return reply(403, { code: "origin_denied", message: "Origin is not configured." });
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
-  if (request.method !== "POST") return reply(405, { code: "method_not_allowed" });
+  if (!["GET", "POST"].includes(request.method)) return reply(405, { code: "method_not_allowed" });
   try {
     const authorization = request.headers.get("Authorization") ?? "";
     if (!ports.configured) return reply(503, { code: "validator_unconfigured" });
@@ -34,6 +36,13 @@ export async function handleProductImage(request: Request, ports: ImageValidator
     const role = await caller.from("dashboard_roles").select("role").eq("user_id", userId).maybeSingle();
     if (role.error) return reply(503, { code: "role_check_unavailable" });
     if (role.data?.role !== "owner") return reply(403, { code: "42501", message: "Owner access required" });
+    if (request.method === "GET") {
+      if (!ports.ready) return reply(503, { code: "decoder_unavailable" });
+      try { await ports.ready(); } catch { return reply(503, { code: "decoder_unavailable" }); }
+      const schema = await caller.rpc("owner_product_media_ready", {});
+      if (schema.error || schema.data !== true) return reply(503, { code: "media_schema_unavailable" });
+      return reply(200, { ready: true, contract: IMAGE_VALIDATOR_CONTRACT });
+    }
 
     // Only a small JSON pointer, never a user-provided URL or arbitrary binary body.
     if (Number(request.headers.get("Content-Length") ?? 0) > 1024) return reply(413, { code: "request_too_large" });

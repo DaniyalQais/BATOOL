@@ -1,0 +1,7 @@
+# Client Owner admin — catalog handover
+
+Client staff manage the catalog at `/admin/login/` using their existing Owner account. Owner can create inactive stitched 3-piece drafts; edit names, descriptions, PKR prices, collection, card label/accent and S/M/L/XL quantities; archive/unarchive products; and edit validated-photo alt text. Zero means out of stock; Unknown is unconfirmed and cannot support real checkout. Slugs stay fixed after creation. Saving updates the database only.
+
+Once the prepared photo release is deployed, verified and published: save the draft details and known stock, choose a JPG/PNG/WebP, enter useful alt text, then upload/save its main photo. Trusted validation must succeed. Explicitly approve the saved product/current photo as genuine merchandise, then activate and save. A photo replacement resets the product to inactive/sample until reapproved. On a conflict or uncertain response, reload and review the saved state before retrying. Keep sample or image-less merchandise inactive; it cannot be ordered.
+
+Limitations: one main photo per product; no gallery or image deletion. Catalog/photo/stock changes require a storefront rebuild and approved publication. Photo upload/merchandise approval are **prepared locally and remain disabled pending deployment acceptance**. Checkout, payments and recovery remain separately disabled; product approval does not launch them. No catalog collection or data entry by the developer is required.

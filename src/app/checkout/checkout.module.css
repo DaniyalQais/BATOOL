@@ -10,6 +10,14 @@
   max-width: 1180px;
   margin: 0 auto;
 }
+.container section[aria-label="Local checkout test"] { text-align: left; max-width: 740px; margin: auto; }
+.container section[aria-label="Local checkout test"] label { display: block; margin-block: 12px; }
+.container section[aria-label="Local checkout test"] input:not([type="checkbox"]),
+.container section[aria-label="Local checkout test"] select { display: block; width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+.container section[aria-label="Local checkout test"] button { margin: 8px 8px 8px 0; padding: 10px 14px; border: 1px solid #51343f; border-radius: 4px; }
+.container section[aria-label="Local checkout test"] button:disabled { opacity: .5; }
+.container section[aria-label="Local checkout test"] fieldset { padding: 16px; }
+.container section[aria-label="Local checkout test"] [role="alert"] { color: #8c2020; }
 .previewNotice {
   margin: 0 0 28px;
   padding: 14px 18px;

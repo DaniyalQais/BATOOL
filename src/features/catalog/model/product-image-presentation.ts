@@ -14,7 +14,7 @@ const imageMetadata: Readonly<Record<string, {
   zeenat: { width: 384, height: 1024 },
 };
 
-export function productImagePresentation(product: Pick<Product, "imageSlug" | "imageNote" | "uploadedImage">) {
+export function productImagePresentation(product: Pick<Product, "imageSlug" | "imageNote" | "uploadedImage" | "isDemo">) {
   const image = product.uploadedImage ?? imageMetadata[product.imageSlug];
   if (!image) throw new Error(`Missing product image dimensions: ${product.imageSlug}`);
 
@@ -29,7 +29,10 @@ export function productImagePresentation(product: Pick<Product, "imageSlug" | "i
     mobileWidth,
     sizes: `(max-width: 900px) min(calc(100vw - 32px), ${72 * ratio}svh, ${Math.min(image.width, 640 * ratio)}px), ${desktopWidth}px`,
     caption: product.uploadedImage
-      ? `Uploaded main image. Original demo fallback disclosure: ${product.imageNote ?? "Sample photography for design preview."}`
+      ? product.imageSlug
+        ? `Uploaded main image. Original demo fallback disclosure: ${product.imageNote ?? "Sample photography for design preview."}`
+        : product.isDemo === false ? "Owner-approved product photo."
+          : `Validated uploaded image. ${product.imageNote ?? "Garment specifications await brand confirmation."}`
       : product.imageNote ?? "Sample photography for design preview.",
   };
 }

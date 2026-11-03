@@ -4,14 +4,16 @@ The next prepared feature is [Owner main-image uploads](owner-product-images.md)
 
 ## Scope and current status
 
+The [order database foundation and read-only dashboard](order-foundation.md) use user-applied migration 006. Its supplied configuration checks passed; database execution tests remain pending. `/admin/` now has a locally implemented Orders section: Owner can inspect operational details; Partner queries only report-safe identifiers/dates/amounts/statuses. Customer data remains isolated by database grants/RLS, and no order-creation endpoint or application order-write capability was added. Isolated frontend tests do not establish database authorization.
+
 The user confirmed the dashboard-role migration, initial account creation, and subsequent Owner product-editing migration 004 were applied manually. No accounts, role assignments or emails have been created/sent by the agent. Shared SQL results, user-reported Owner browser checks, and user-executed Partner/unassigned RPC denial passes are recorded in [the authorization verification guide](product-editing-authorization-checks.md). The user confirmed temporary-account deletion and a clear read-only cleanup check preserving the original Auth user with Owner role. These are user-supplied remote results, distinct from automated local tests; other acceptance checks remain unverified unless explicitly recorded there.
 
-Routes: `/admin/login/`, `/admin/`, `/admin/reset-password/`. The dashboard displays the verified account email and assigned role, with Owner-only editing of the six existing products described in [owner-product-editing.md](owner-product-editing.md). There are no orders, reports, metrics, commission/settlement features or checkout changes.
+Routes: `/admin/login/`, `/admin/`, `/admin/reset-password/`. The dashboard displays the verified account email and assigned role, a read-only Orders section, and Owner-only editing of the six existing products described in [owner-product-editing.md](owner-product-editing.md). No sales metrics, commission/settlement features or checkout changes were added.
 
 | Role | Intended future scope | Permissions granted now |
 | --- | --- | --- |
-| `owner` | Initially the setup operator; later the client: future product and order management | Read own role assignment; Owner catalog edits only after migration 004 |
-| `partner` | Partner: future read access to order amounts, statuses and reports | Read own role assignment only |
+| `owner` | Initially the setup operator; later the client | Read own role; catalog editing; read orders, customer details, item snapshots and history |
+| `partner` | Read access to order amounts and statuses | Read own role and report-safe order identifiers/dates/amounts/statuses; no private order queries |
 
 Neither role can assign/revoke roles. Direct catalog writes remain denied; migration 004 adds only an explicitly checked Owner save RPC. Every account must be explicitly created and assigned a role. Signing in, email domain, user metadata, UUID ordering and being the first user grant no authorization.
 

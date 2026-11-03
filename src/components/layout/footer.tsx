@@ -3,7 +3,10 @@ import { collectionHref } from "@/features/catalog/model/catalog";
 import { stitchedCategories } from "@/features/catalog/model/types";
 import { PrivateListForm } from "./private-list-form";
 import styles from "./footer.module.css";
+import { publicBusinessSettings as settings } from "@/features/settings/model/generated/public-settings";
+import { checkoutIsWired, releaseCopy } from "@/features/checkout/model/release-copy";
 export function Footer() {
+  const disclosure = releaseCopy(checkoutIsWired(), false).availability;
   return (
     <footer className={styles.footer}>
       <section className={styles.newsletterBand} aria-labelledby="footer-newsletter-title">
@@ -36,14 +39,15 @@ export function Footer() {
             <li><Link href="/help/size/">Size guide</Link></li>
             <li><Link href="/help/delivery/">Delivery &amp; returns</Link></li>
             <li><Link href="/help/contact/">Contact</Link></li>
+            {settings.public_whatsapp && <li><a href={`https://wa.me/${settings.public_whatsapp}`} rel="noopener noreferrer">WhatsApp +{settings.public_whatsapp}</a></li>}
+            {settings.support_email && <li><a href={`mailto:${settings.support_email}`}>{settings.support_email}</a></li>}
           </ul>
         </nav>
       </div>
       <div className={styles.bottomBand}>
         <div className={styles.bottom}>
           <p className={styles.concept}>
-            This is a concept store. Products and prices are illustrative; orders
-            and payments are not yet enabled.
+            Concept and sample images are illustrative; see individual image disclosures. {disclosure}
           </p>
           <div className={styles.legal}>
             <span>© {new Date().getFullYear()} BATOOL</span>

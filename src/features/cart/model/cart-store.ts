@@ -70,6 +70,13 @@ export function createCartStore(environment: CartEnvironment) {
     getCount: () => cartCount(snapshot),
     getServerCount: () => 0,
     actions: {
+      completeCheckout(purchased: readonly CartLine[]) {
+        restore();
+        // Preserve lines edited/added while checkout was in flight. An unchanged
+        // bag clears after confirmation; changed quantities are kept for review.
+        commit(snapshot.filter(line => !purchased.some(item => item.id === line.id
+          && item.size === line.size && item.quantity === line.quantity)));
+      },
       add(id: number, size: Size) {
         restore();
         const next = addLine(snapshot, id, size);

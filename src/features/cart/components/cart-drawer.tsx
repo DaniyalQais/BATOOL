@@ -5,10 +5,13 @@ import { Modal } from "@/components/ui/modal";
 import { ProductPhoto } from "@/components/ui/product-photo";
 import { getProductById } from "@/features/catalog/model/active-catalog";
 import { collectionHref } from "@/features/catalog/model/catalog";
+import { checkoutIsWired, isSampleItem, releaseCopy } from "@/features/checkout/model/release-copy";
 import { formatPrice } from "@/lib/format";
 import { useCartItems, cartActions } from "../model/store";
 import { cartSubtotal, MAX_QUANTITY, type CartLine } from "../model/cart";
-import { checkoutTotals, expressShipping } from "../model/checkout";
+import { checkoutTotals } from "../model/checkout";
+import { publicBusinessSettings as settings } from "@/features/settings/model/generated/public-settings";
+import { shippingDescription } from "@/features/settings/model/shipping";
 import { cartLineKey, removalFocusTarget } from "../model/drawer-focus";
 import styles from "./cart-drawer.module.css";
 
@@ -24,8 +27,11 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
   const focusedLine = useRef<string | null>(null);
   const previousItems = useRef(items);
   const intent = useRef<{ line: CartLine; before: readonly CartLine[] } | null>(null);
-  const totals = checkoutTotals(items);
+  const totals = checkoutTotals(items, false, settings.shipping);
   const showCheckout = checkout && items.length > 0;
+  const checkoutWired = checkoutIsWired();
+  const sampleBag = items.some(line => isSampleItem(getProductById(line.id)));
+  const copy = releaseCopy(checkoutWired, sampleBag);
 
   function focusAfterRemoval(before: readonly CartLine[], key: string) {
     const target = removalFocusTarget(before, items, key);
@@ -110,13 +116,13 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
             </ul>
             <dl className={styles.costs}>
               <div><dt>Subtotal</dt><dd>{formatPrice(totals.subtotal)}</dd></div>
-              <div><dt>{expressShipping.label}</dt><dd>Complimentary</dd></div>
-              <div><dt>Payment</dt><dd>Cash on Delivery</dd></div>
-              <div className={styles.total}><dt>Total payable</dt><dd>{formatPrice(totals.total)}</dd></div>
+              <div><dt>Shipping preview</dt><dd>{totals.shipping === null ? "Unconfigured" : formatPrice(totals.shipping)}</dd></div>
+              <div><dt>Payment</dt><dd>{checkoutWired ? "Check availability at checkout" : "Unavailable"}</dd></div>
+              <div className={styles.total}><dt>Preview total</dt><dd>{totals.total === null ? "Awaiting shipping configuration" : formatPrice(totals.total)}</dd></div>
             </dl>
-            <p className={styles.deliveryNote}>Estimated delivery: {expressShipping.estimate} across Pakistan. Pay when your ensemble arrives.</p>
-            <Link href="/checkout/?preview=1" className={styles.primary} onNavigate={onClose}>
-              Continue to delivery details <span aria-hidden="true">→</span>
+            <p className={styles.deliveryNote}>{shippingDescription(settings.shipping)} {checkoutWired ? "Current prices, stock, shipping and available payment methods are checked at checkout." : "Delivery time awaits confirmation. Orders and payments are unavailable in this preview."}</p>
+            <Link href={checkoutWired ? "/checkout/" : "/checkout/?preview=1"} className={styles.primary} onNavigate={onClose}>
+              {checkoutWired ? "Continue to checkout" : "View bag preview"} <span aria-hidden="true">→</span>
             </Link>
             <button type="button" className={styles.textButton} onClick={() => setCheckout(false)}>Back to bag</button>
           </div>
@@ -167,17 +173,17 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
             <div className={styles.summary}>
               <p className={styles.subtotal}><span>Subtotal</span><strong>{formatPrice(totals.subtotal)}</strong></p>
               <div className={styles.serviceSummary}>
-                <p><span>Cash on Delivery</span><span>Pay on arrival</span></p>
-                <p><span>{expressShipping.label}</span><span>Complimentary</span></p>
-                <small>{expressShipping.estimate} · Pakistan</small>
+                <p><span>Orders and payments</span><span>{checkoutWired ? "Check at checkout" : "Unavailable"}</span></p>
+                <p>{shippingDescription(settings.shipping)}</p>
+                <small>Delivery time awaiting confirmation · Pakistan</small>
               </div>
               <button type="button" ref={checkoutButton} className={styles.primary} onClick={() => setCheckout(true)}>
-                Proceed to Checkout <span aria-hidden="true">→</span>
+                {sampleBag ? "Review demo bag" : "Review bag"} <span aria-hidden="true">→</span>
               </button>
             </div>
           </>
         )}
-        <p className={styles.disclosure}>Demo bag · No orders or payments will be submitted.</p>
+        <p className={styles.disclosure}>{sampleBag && "This bag includes sample items that cannot be ordered. "}{copy.bagNotice} {checkoutWired && "Final availability and totals require a confirmed checkout quote."}</p>
         <p role="status" aria-atomic="true" className={styles.feedback}>{message}</p>
       </div>
     </Modal>

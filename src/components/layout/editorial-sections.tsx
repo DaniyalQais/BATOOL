@@ -3,6 +3,8 @@ import { Gift, Scissors, Shirt } from "lucide-react";
 import { ProductPhoto } from "@/components/ui/product-photo";
 import { collectionHref } from "@/features/catalog/model/catalog";
 import styles from "./editorial-sections.module.css";
+import { publicBusinessSettings as settings } from "@/features/settings/model/generated/public-settings";
+import { shippingDescription } from "@/features/settings/model/shipping";
 export { Hero } from "@/features/campaign/components/hero";
 export function EditorialStory() {
   return (
@@ -52,13 +54,13 @@ export function EditorialStory() {
           <Scissors className={styles.icon} size={48} strokeWidth={1} aria-hidden="true" focusable="false" />
           <span className={styles.number} aria-hidden="true">02</span>
           <h3>Precision Tailoring</h3>
-          <p>Demo sizes S–XL; final fit awaits confirmation</p>
+          <p>Size labels S–XL; ask for style-specific measurements</p>
         </div>
         <div className={styles.highlight}>
           <Gift className={styles.icon} size={48} strokeWidth={1} aria-hidden="true" focusable="false" />
           <span className={styles.number} aria-hidden="true">03</span>
           <h3>Ready to Wear</h3>
-          <p>Dispatched in 48 hours with 7-day size exchange</p>
+          <p>Ready stock. {shippingDescription(settings.shipping)}</p>
         </div>
       </section>
     </>

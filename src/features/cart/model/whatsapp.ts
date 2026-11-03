@@ -2,9 +2,6 @@ import { type CartLine } from "./cart.ts";
 import { getProductById } from "../../catalog/model/active-catalog.ts";
 import { formatPrice } from "../../../lib/format.ts";
 
-export const STORE_OWNER_WHATSAPP = process.env.NEXT_PUBLIC_STORE_WHATSAPP_NUMBER || "923004323811";
-export const STORE_OWNER_PHONE_DISPLAY = "0300-4323811";
-
 export interface OrderDataForWhatsApp {
   orderRef: string;
   name: string;
@@ -89,9 +86,10 @@ Your order has been received and is being prepared with utmost care. Our concier
 /**
  * Generates the wa.me link for sending the TCS slip to the store owner.
  */
-export function getStoreOwnerWhatsAppUrl(order: OrderDataForWhatsApp): string {
+export function getStoreOwnerWhatsAppUrl(order: OrderDataForWhatsApp, recipient: string): string {
+  if (!/^92[0-9]{10}$/.test(recipient)) throw new Error("Explicit recipient required. No public-contact fallback.");
   const text = buildTcsSlipMessage(order);
-  return `https://wa.me/${STORE_OWNER_WHATSAPP}?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/${recipient}?text=${encodeURIComponent(text)}`;
 }
 
 /**
@@ -100,6 +98,7 @@ export function getStoreOwnerWhatsAppUrl(order: OrderDataForWhatsApp): string {
 export function getCustomerWhatsAppUrl(order: OrderDataForWhatsApp): string {
   const text = buildCustomerThankYouMessage(order);
   const cleanPhone = formatWhatsAppPhone(order.phone);
-  const targetNumber = cleanPhone || STORE_OWNER_WHATSAPP;
+  if (!/^92[0-9]{10}$/.test(cleanPhone)) throw new Error("Valid customer phone required.");
+  const targetNumber = cleanPhone;
   return `https://wa.me/${targetNumber}?text=${encodeURIComponent(text)}`;
 }

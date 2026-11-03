@@ -9,6 +9,9 @@ import { formatPrice } from "@/lib/format";
 import { categoryLabels } from "@/features/catalog/model/types";
 import { productImagePresentation } from "@/features/catalog/model/product-image-presentation";
 import styles from "./product-page.module.css";
+import { publicBusinessSettings as settings } from "@/features/settings/model/generated/public-settings";
+import { shippingDescription } from "@/features/settings/model/shipping";
+import { checkoutIsWired, isSampleItem, releaseCopy } from "@/features/checkout/model/release-copy";
 type Props = { params: Promise<{ slug: string }> };
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -16,12 +19,15 @@ export function generateStaticParams() {
 }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = catalogRepository.findBySlug((await params).slug);
-  return { title: p?.name ?? "Product not found", description: p?.description };
+  return { title: p?.name ?? "Product not found", description: p?.description,
+    ...(p ? { alternates: { canonical: `/products/${p.slug}/` } } : {}) };
 }
 export default async function ProductPage({ params }: Props) {
   const p = catalogRepository.findBySlug((await params).slug);
   if (!p) notFound();
   const image = productImagePresentation(p);
+  const sample = isSampleItem(p);
+  const copy = releaseCopy(checkoutIsWired(), sample);
   return (
     <main id="main" className={styles.page}>
       <Link href="/#collection" className={styles.back}>
@@ -51,30 +57,29 @@ export default async function ProductPage({ params }: Props) {
           <p className={styles.price}>{formatPrice(p.price)}</p>
           <div className={styles.ensemble}>
             <p>Complete Stitched 3-Piece Ensemble</p>
-            <span>Concept styling; garment details await confirmation.</span>
+            <span>{sample ? "Concept styling; garment details await confirmation." : "See this product’s description; confirm any unlisted details with BATOOL."}</span>
           </div>
           <p className={styles.description}>{p.description}</p>
           <AddToBag key={p.id} product={p} />
           <p className={styles.disclosure}>
-            Illustrative product and price. Design preview only: no orders or
-            payments will be submitted.
+            {copy.item} {sample && copy.availability}
           </p>
           <div className={styles.details}>
             <details>
-              <summary>3-Piece Concept Details</summary>
-              <p>Illustrative styling for a stitched 3-piece ensemble. Exact garment components, fabric composition, lining and embellishment specifications await brand confirmation.</p>
+              <summary>{sample ? "3-Piece Concept Details" : "Garment details"}</summary>
+              <p>{sample ? "Illustrative styling for a stitched 3-piece ensemble. Exact garment components, fabric composition, lining and embellishment specifications await brand confirmation." : "Refer to the product description. Contact BATOOL about materials, lining or embellishments that are not listed."}</p>
             </details>
             <details>
               <summary>Tailoring &amp; Fit</summary>
               <p>
-                Demo size options: {p.sizes.join(", ") || "none currently selectable"}. Open the Size &amp; Fit Guide above for sample measurements and measuring advice. Final garment details and fit await brand confirmation.
+                {sample ? "Demo size options" : "Listed size options"}: {p.sizes.join(", ") || "none currently selectable"}.
+                {sample ? " Open the Size & Fit Guide above for sample measurements. Final garment details and fit await brand confirmation." : " A size label is not a garment measurement. Confirm style-specific measurements with BATOOL before ordering."}
               </p>
               <p><Link href="/help/size/">Read size guidance</Link></p>
             </details>
             <details>
-              <summary>Delivery &amp; 7-Day Exchange</summary>
-              <p>Complimentary express shipping across Pakistan, with estimated delivery in 2–4 business days. Request a size exchange within 7 days of delivery; keep the ensemble unworn with its tags attached.</p>
-              <p>Delivery estimates and exchange terms are illustrative for this preview.</p>
+              <summary>Delivery &amp; returns</summary>
+              <p style={{ whiteSpace: "pre-wrap" }}>{shippingDescription(settings.shipping)} {settings.policy_text ?? "Delivery times and exchange/refund terms have not been approved for publication."}</p>
               <p><Link href="/help/delivery/">Read delivery and returns information</Link></p>
             </details>
           </div>

@@ -5,4 +5,11 @@ project_id = "batool-local"
 # This does NOT make the endpoint unauthenticated: the handler fails closed.
 verify_jwt = false
 entrypoint = "./functions/validate-product-image/index.ts"
-static_files = ["./functions/validate-product-image/assets/magick.wasm"]
+# Pinned decoder is fetched from a private immutable Storage object, length/hash
+# checked and initialized server-side. No 15 MB static binary in this bundle.
+
+[functions.secure-checkout]
+# Prepared only, not deployed. Guest scopes are signed and checked by the handler.
+# Browser Auth/metadata cannot call the service-only database RPCs.
+verify_jwt = false
+entrypoint = "./functions/secure-checkout/index.ts"

@@ -64,7 +64,7 @@ test("the public image directory contains only retained products and stitched ca
   expected.push(...[576, 864, 1152].map(width => `campaign-stitched-${width}.webp`));
   const actual = await readdir(new URL("../public/images/", import.meta.url));
   assert.deepEqual(actual.sort(), expected.sort());
-  assert.deepEqual((await readdir(new URL("../assets/source/", import.meta.url))).sort(), ["README.md", "stitched-editorial.png"]);
+  assert.deepEqual((await readdir(new URL("../assets/source/", import.meta.url))).sort(), ["README.md", "batool-monogram.svg", "stitched-editorial.png"]);
   const source = await sharp(fileURLToPath(new URL("../assets/source/stitched-editorial.png", import.meta.url))).metadata();
   assert.equal(source.width, 1536);
   assert.equal(source.height, 1024);
