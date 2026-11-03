@@ -27,7 +27,15 @@ function Checkout() {
   const totals = checkoutTotals(items, false, settings.shipping);
   return <main id="main" className={styles.checkoutPage}>
     <div className={styles.container}>
-      <div className={styles.topNav}><Link href="/" className={styles.brandWordmark}>BATOOL</Link></div>
+      <div className={styles.topNav}>
+        <nav aria-label="Breadcrumbs" className={styles.breadcrumbs}>
+          <Link href="/">Home</Link>
+          <span className={styles.crumbSep}>/</span>
+          <Link href="/#collection">Collection</Link>
+          <span className={styles.crumbSep}>/</span>
+          <span className={styles.crumbActive}>Checkout</span>
+        </nav>
+      </div>
       {local ? (
         <LocalCheckout endpoint={endpoint} />
       ) : productionEndpoint && (release || recovery) ? (

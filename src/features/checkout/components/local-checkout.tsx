@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { cartActions, useCartItems } from "../../cart/model/store";
 import { checkoutClient, httpCheckoutTransport } from "../model/checkout-client";
 import type { DeliveryDetails, PaymentMethod, Quote, Receipt } from "../model/contracts";
 import { SupportRecovery } from "./support-recovery";
 import { getProductById } from "@/features/catalog/model/active-catalog";
 import { formatWhatsAppPhone } from "@/features/cart/model/whatsapp";
+import { publicBusinessSettings } from "@/features/settings/model/generated/public-settings";
 import styles from "@/app/checkout/checkout.module.css";
 
 const storageKey = "batool-local-checkout-intent-v1";
@@ -25,7 +27,7 @@ export function LocalCheckout({ endpoint, production = false, methods = ["cod", 
   const [method, setMethod] = useState<PaymentMethod>("cod");
   const [busy, setBusy] = useState(false); const [error, setError] = useState(""); const [blocked, setBlocked] = useState(false);
   const [feedback, setFeedback] = useState("");
-  const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
+  const [copiedRef, setCopiedRef] = useState(false);
 
   useEffect(() => { try {
     client.restore();
@@ -76,31 +78,96 @@ export function LocalCheckout({ endpoint, production = false, methods = ["cod", 
     {receipt ? (
       <div role="status" className={styles.successCard}>
         <div className={styles.successIcon}>✓</div>
+        <span className={styles.orderConfirmedBadge}>Order Confirmed</span>
         <h2 className={styles.successTitle}>Order saved</h2>
-        <button
-          type="button"
-          className={styles.successOrderRefBtn}
-          onClick={() => { if (typeof navigator !== "undefined" && navigator.clipboard) void navigator.clipboard.writeText(receipt.order_id); }}
-          title="Click to copy reference"
-        >
-          <span>Reference: {receipt.order_id}</span>
-          <span className={styles.copyBadge}>Copy ID</span>
-        </button>
-        <p className={styles.successSubtitle}>
-          Total: <strong>{money(receipt.total_minor)}</strong> · Payment: <strong>{receipt.payment_status}</strong>
-          <br />
-          Thank you for choosing BATOOL. Your order has been placed successfully and our team will contact you via WhatsApp/SMS before dispatch.
+        <p className={styles.orderSubtitle}>
+          Thank you for choosing BATOOL. Your luxury pret order has been placed successfully and is being prepared for dispatch.
         </p>
-        <p style={{ fontSize: "12px", color: "#777", marginBottom: "24px" }}>
+
+        <div className={styles.refContainer}>
+          <button
+            type="button"
+            className={styles.successOrderRefBtn}
+            onClick={() => {
+              if (typeof navigator !== "undefined" && navigator.clipboard) {
+                void navigator.clipboard.writeText(receipt.order_id);
+                setCopiedRef(true);
+                setTimeout(() => setCopiedRef(false), 2500);
+              }
+            }}
+            title="Click to copy reference"
+          >
+            <span>Reference: {receipt.order_id}</span>
+            <span className={styles.copyBadge}>{copiedRef ? "✓ Copied!" : "Copy ID"}</span>
+          </button>
+        </div>
+
+        {/* Structured Order Breakdown Card */}
+        <div className={styles.orderReceipt}>
+          <div className={styles.receiptRow}>
+            <span className={styles.receiptLabel}>Total Amount Payable</span>
+            <span className={styles.receiptValue} style={{ fontSize: "16px", fontWeight: 700, color: "#111111" }}>
+              {money(receipt.total_minor)}
+            </span>
+          </div>
+          <div className={styles.receiptRow}>
+            <span className={styles.receiptLabel}>Payment Method</span>
+            <span className={styles.receiptValue}>
+              {receipt.payment_status === "unpaid" ? "Cash on Delivery (COD)" : receipt.payment_status}
+            </span>
+          </div>
+          <div className={styles.receiptRow}>
+            <span className={styles.receiptLabel}>Estimated Delivery</span>
+            <span className={styles.receiptValue}>3–5 Working Days across Pakistan</span>
+          </div>
+          <div className={styles.receiptRow}>
+            <span className={styles.receiptLabel}>Inspection Guarantee</span>
+            <span className={styles.receiptValue}>📦 Open &amp; Inspect Parcel Upon Delivery</span>
+          </div>
+        </div>
+
+        {/* WhatsApp Customer Action Card */}
+        <div className={styles.whatsappCard}>
+          <div className={styles.whatsappCardHeader}>
+            <span className={styles.whatsappCardBadge}>💬 WhatsApp Customer Care</span>
+            <h3 className={styles.whatsappCardTitle}>Order Confirmation via WhatsApp</h3>
+            <p className={styles.whatsappCardDesc}>
+              Want immediate dispatch tracking or size assistance? Tap below to send your order reference directly to BATOOL Official WhatsApp.
+            </p>
+          </div>
+          <a
+            href={`https://wa.me/${(publicBusinessSettings.public_whatsapp || "923424834128").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Salam BATOOL, I placed Order #${receipt.order_id.slice(0, 8)}. Total: ${money(receipt.total_minor)}. Please confirm my order dispatch.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.whatsappCustomerCta}
+          >
+            <span className={styles.whatsappButtonIcon}>💬</span>
+            <span>Confirm Order on WhatsApp</span>
+          </a>
+        </div>
+
+        <p style={{ fontSize: "12px", color: "#777777", margin: "0 0 20px", lineHeight: "1.5" }}>
           Wallet payments require manual verification. An order confirmation does not confirm payment.
         </p>
-        <button
-          type="button"
-          className={styles.placeOrderBtn}
-          onClick={() => { try { client.startAnother(); setReceipt(null); setQuote(null); } catch { setError("Saved checkout could not be cleared. Keep this order reference."); } }}
-        >
-          Start another order
-        </button>
+
+        <div className={styles.receiptActions}>
+          <Link href="/#collection" className={styles.continueShoppingBtn}>
+            Continue Shopping
+          </Link>
+          <button
+            type="button"
+            className={styles.startAnotherBtn}
+            onClick={() => { try { client.startAnother(); setReceipt(null); setQuote(null); } catch { setError("Saved checkout could not be cleared. Keep this order reference."); } }}
+          >
+            Start another order
+          </button>
+        </div>
+
+        <div className={styles.confirmationHelpLinks}>
+          <Link href="/help/delivery/" className={styles.grayTextLink}>Delivery &amp; Exchange Policy</Link>
+          <span className={styles.helpDivider}>•</span>
+          <Link href="/help/contact/" className={styles.grayTextLink}>Contact Customer Support</Link>
+        </div>
       </div>
     ) : (
       <div className={styles.layout}>

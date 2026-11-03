@@ -1067,3 +1067,206 @@
     padding-bottom: 92px;
   }
 }
+
+
+/* Breadcrumbs Navigation */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #777777;
+  letter-spacing: 0.04em;
+}
+
+.breadcrumbs a {
+  color: #555555;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.breadcrumbs a:hover {
+  color: #111111;
+}
+
+.crumbSep {
+  color: #cccccc;
+}
+
+.crumbActive {
+  color: #111111;
+  font-weight: 600;
+}
+
+/* Subtle Refresh Bar */
+.refreshBar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.refreshBtn {
+  background: none;
+  border: 1px solid #e0deda;
+  padding: 5px 12px;
+  font-size: 11px;
+  color: #777777;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.refreshBtn:hover {
+  border-color: #111111;
+  color: #111111;
+}
+
+.feedbackBanner {
+  font-size: 13px;
+  padding: 10px 14px;
+  background: #fdfaf6;
+  border-left: 3px solid #C5A880;
+  color: #555555;
+  margin-bottom: 14px;
+}
+
+/* Order Confirmation Enhancements */
+.orderConfirmedBadge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1a7431;
+  background: #f0f7f2;
+  border: 1px solid #c9e2cf;
+  padding: 4px 12px;
+  margin-bottom: 10px;
+}
+
+.orderSubtitle {
+  font-size: 14px;
+  color: #666666;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.refContainer {
+  margin-bottom: 24px;
+}
+
+.receiptActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.continueShoppingBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  background: #111111;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 150ms ease;
+}
+
+.continueShoppingBtn:hover {
+  background: #C5A880;
+}
+
+.startAnotherBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  background: #ffffff;
+  border: 1px solid #e0deda;
+  color: #666666;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.startAnotherBtn:hover {
+  border-color: #111111;
+  color: #111111;
+}
+
+/* Luxury Support & Recovery Section */
+.supportCard {
+  max-width: 680px;
+  margin: 36px auto 0;
+  padding: 24px 28px;
+  background: #ffffff;
+  border: 1px solid #eae5de;
+  text-align: left;
+}
+
+.supportTitle {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #111111;
+  margin: 0 0 8px;
+}
+
+.supportDesc {
+  font-size: 12px;
+  color: #666666;
+  line-height: 1.6;
+  margin: 0 0 12px;
+}
+
+.supportActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.supportBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1px solid #111111;
+  color: #111111;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.supportBtn:hover:not(:disabled) {
+  background: #111111;
+  color: #ffffff;
+}
+
+.supportBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.supportStatusText {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #fdfaf6;
+  border-left: 3px solid #C5A880;
+  font-size: 12px;
+  color: #555555;
+  line-height: 1.4;
+}
