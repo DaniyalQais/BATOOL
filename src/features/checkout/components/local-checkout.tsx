@@ -32,10 +32,25 @@ export function LocalCheckout({ endpoint, production = false, methods = ["cod", 
   useEffect(() => { try {
     client.restore();
     const saved = client.pending();
-    if (saved) { setQuote(saved.quote); setMethod(saved.quote.payment_method); if (saved.receipt) setReceipt(saved.receipt); }
-    else if (client.operationalReceipt()) setReceipt(client.operationalReceipt()!);
+    if (saved) {
+      if (saved.receipt && cart.length > 0) {
+        try {
+          client.startAnother();
+          setReceipt(null);
+          setQuote(null);
+          return;
+        } catch {}
+      }
+      setQuote(saved.quote); setMethod(saved.quote.payment_method); if (saved.receipt) setReceipt(saved.receipt);
+    }
+    else if (client.operationalReceipt()) {
+      if (cart.length > 0) {
+        try { client.startAnother(); setReceipt(null); return; } catch {}
+      }
+      setReceipt(client.operationalReceipt()!);
+    }
     else if (client.restarting()) setFeedback("The old attempt is safely closed. Your bag is preserved. Review a replacement quote.");
-  } catch { setBlocked(true); setError("Saved checkout needs review. Your bag is preserved. Contact BATOOL before another attempt."); } }, [client]);
+  } catch { setBlocked(true); setError("Saved checkout needs review. Your bag is preserved. Contact BATOOL before another attempt."); } }, [client, cart.length]);
 
   async function run(action: () => Promise<void>) {
     if (busy) return;
@@ -151,7 +166,13 @@ export function LocalCheckout({ endpoint, production = false, methods = ["cod", 
         </p>
 
         <div className={styles.receiptActions}>
-          <Link href="/#collection" className={styles.continueShoppingBtn}>
+          <Link
+            href="/#collection"
+            className={styles.continueShoppingBtn}
+            onClick={() => {
+              try { client.startAnother(); setReceipt(null); setQuote(null); } catch {}
+            }}
+          >
             Continue Shopping
           </Link>
           <button
