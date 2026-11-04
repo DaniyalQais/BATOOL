@@ -1,202 +1,412 @@
 .footer {
   border-top: 1px solid var(--line);
-  background: var(--paper);
+  background: #fbf9f6;
   color: var(--ink);
   font-family: var(--font-sans), sans-serif;
+  overflow: hidden;
 }
-.newsletter,
-.main,
-.bottom {
+
+/* ✦ Hallmark Trust Strip */
+.hallmarkStrip {
+  border-bottom: 1px solid var(--line);
+  background: #faf6f0;
+  padding: 24px 0;
+}
+
+.hallmarkContainer {
   width: 90%;
   max-width: 1440px;
   margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 20px;
 }
+
+.hallmarkItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hallmarkIcon {
+  font-size: 26px;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+.hallmarkTitle {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  letter-spacing: 0.02em;
+}
+
+.hallmarkText {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: #666666;
+  line-height: 1.4;
+}
+
+.hallmarkDivider {
+  display: none;
+}
+
+/* ✦ Newsletter / The BATOOL Edit */
 .newsletterBand {
   border-bottom: 1px solid var(--line);
+  background: radial-gradient(circle at 100% 0%, rgba(89, 44, 63, 0.06) 0%, transparent 60%), #fdfcfb;
+  padding-block: 44px;
 }
+
 .newsletter {
+  width: 90%;
+  max-width: 1440px;
+  margin-inline: auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   align-items: center;
-  gap: 24px 48px;
-  padding-block: 28px;
+  gap: 32px 64px;
 }
-.newsletter h2 {
-  margin: 0 0 8px;
+
+.newsletterIntro {
+  min-width: 0;
+}
+
+.newsletterEyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--plum);
+  text-transform: uppercase;
+}
+
+.newsletterHeading {
+  margin: 0 0 10px;
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(30px, 2.8vw, 38px);
+  font-size: clamp(32px, 3.2vw, 42px);
   font-weight: 400;
   line-height: 1.15;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
+  color: #111111;
 }
-.newsletter > div > p {
+
+.newsletterIntro p {
   margin: 0;
-  color: var(--muted);
-  font-size: 12px;
+  color: #666666;
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 48ch;
 }
+
+.newsletterFormWrapper {
+  width: 100%;
+}
+
 .form {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px 12px;
+  gap: 10px 12px;
   width: 100%;
-  max-width: 560px;
+  max-width: 520px;
   justify-self: end;
 }
+
 .form label {
   grid-column: 1 / -1;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #555555;
 }
+
 .email {
   width: 100%;
   min-width: 0;
-  height: 44px;
-  padding: 10px 0;
-  border: 0;
-  border-bottom: 1px solid var(--muted);
-  border-radius: 0;
-  background: transparent;
-  color: var(--ink);
-  font-size: 12px;
+  height: 48px;
+  padding: 12px 16px;
+  border: 1px solid #d8d0c6;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 13px;
+  transition: all 180ms ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
 }
+
 .email:focus {
-  border-bottom-color: var(--plum);
+  outline: none;
+  border-color: var(--plum);
+  box-shadow: 0 0 0 3px rgba(89, 44, 63, 0.12);
 }
+
 .subscribe {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 44px;
-  padding: 10px 12px;
+  height: 48px;
+  padding: 0 24px;
   margin: 0;
   background: var(--plum);
-  color: var(--paper);
-  font-size: 11px;
-  font-weight: 500;
-}
-.subscribe:hover {
-  background: #6f4b59;
-}
-.feedback {
-  grid-column: 1 / -1;
-  /* One shared disclosure/status area, reserving two lines for valid-submit feedback. */
-  min-height: 3.4em;
-  margin: 0;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
-.main {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: 32px;
-  padding-block: 28px;
-}
-.brand {
-  min-width: 0;
-}
-.brandMark {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  font-size: 30px;
-}
-.brand p {
-  margin: 8px 0 0;
-  color: var(--muted);
+  color: #ffffff;
   font-size: 12px;
-}
-.linkGroup {
-  display: block;
-  order: 0;
-  min-width: 0;
-  width: auto;
-}
-.linkGroup h3 {
-  margin: 0 0 8px;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.6;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 180ms ease;
+  white-space: nowrap;
 }
+
+.subscribe:hover {
+  background: #462635;
+  box-shadow: 0 4px 12px rgba(89, 44, 63, 0.25);
+  transform: translateY(-1px);
+}
+
+.feedback {
+  grid-column: 1 / -1;
+  min-height: 2em;
+  margin: 4px 0 0;
+  color: #777777;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* ✦ Main Grid */
+.main {
+  width: 90%;
+  max-width: 1440px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 40px 32px;
+  padding-block: 52px 40px;
+}
+
+.brand {
+  min-width: 0;
+  padding-right: 24px;
+}
+
+.brandMark {
+  display: inline-block;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: #111111;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.brandSub {
+  display: block;
+  margin-top: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--plum);
+  text-transform: uppercase;
+}
+
+.brandDescription {
+  margin: 14px 0 20px;
+  color: #666666;
+  font-size: 12.5px;
+  line-height: 1.7;
+  max-width: 44ch;
+}
+
+.whatsappConciergeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #eef7ee;
+  border: 1px solid #cce5cc;
+  border-radius: 999px;
+  color: #1b6329;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 180ms ease;
+}
+
+.whatsappConciergeBadge:hover {
+  background: #25d366;
+  border-color: #25d366;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.28);
+}
+
+.whatsappDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #25d366;
+}
+
+.whatsappConciergeBadge:hover .whatsappDot {
+  background: #ffffff;
+}
+
+.linkGroup {
+  min-width: 0;
+}
+
+.linkGroup h3 {
+  margin: 0 0 16px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  border-bottom: 1.5px solid var(--plum);
+  padding-bottom: 6px;
+  display: inline-block;
+}
+
 .linkGroup ul {
   list-style: none;
   padding: 0;
   margin: 0;
-}
-.footer .linkGroup a {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer .linkGroup a {
+  display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  padding: 8px 0;
-  color: var(--muted);
-  font-size: 12px;
+  color: #555555;
+  font-size: 13px;
   line-height: 1.5;
-  overflow-wrap: break-word;
+  text-decoration: none;
+  transition: all 150ms ease;
 }
+
 .footer .linkGroup a:hover {
-  color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: var(--plum);
+  transform: translateX(3px);
 }
-.footer :is(a, button, input):focus-visible {
-  outline: 2px solid var(--plum);
-  outline-offset: 4px;
+
+.serviceNotes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
+
+.serviceNotes li strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #222222;
+  margin-bottom: 2px;
+}
+
+.serviceNotes li span {
+  display: block;
+  font-size: 12px;
+  color: #666666;
+  line-height: 1.4;
+}
+
+/* ✦ Bottom Legal Band */
 .bottomBand {
   border-top: 1px solid var(--line);
+  background: #f7f3ee;
 }
+
 .bottom {
-  padding-block: 16px 20px;
+  width: 90%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-block: 20px 24px;
 }
+
 .concept {
   margin: 0 0 12px;
-  color: var(--muted);
+  color: #777777;
   font-size: 11px;
-  line-height: 1.7;
+  line-height: 1.6;
 }
+
 .legal {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 8px 24px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.7;
+  align-items: center;
+  gap: 12px 24px;
+  color: #666666;
+  font-size: 11.5px;
 }
-@media (max-width: 900px) {
-  .newsletter {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
-  }
-  .form {
-    max-width: none;
+
+.countryBadge {
+  font-weight: 600;
+  color: #333333;
+}
+
+.footer :is(a, button, input):focus-visible {
+  outline: 2px solid var(--plum);
+  outline-offset: 3px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hallmarkContainer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 24px;
   }
   .main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 28px;
+    gap: 36px 28px;
   }
   .brand {
     grid-column: 1 / -1;
+    padding-right: 0;
   }
 }
-@media (max-width: 560px) {
-  .newsletter,
-  .main,
-  .bottom {
-    width: calc(100% - 32px);
-  }
-  .newsletter,
-  .main {
-    padding-block: 24px;
-  }
-  .main {
-    column-gap: 20px;
+
+@media (max-width: 768px) {
+  .newsletter {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
   }
   .form {
-    column-gap: 10px;
+    max-width: none;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .hallmarkContainer {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .subscribe {
+    width: 100%;
   }
 }

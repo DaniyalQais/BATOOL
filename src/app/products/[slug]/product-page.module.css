@@ -1,168 +1,444 @@
 .page {
-  width: calc(100% - 48px);
-  max-width: 1000px;
+  width: 90%;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 32px 0 72px;
+  padding: 24px 0 80px;
 }
-.back {
-  display: inline-flex;
+
+/* ✦ Breadcrumb Navigation */
+.breadcrumbBar {
+  display: flex;
   align-items: center;
-  min-height: 44px;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--line);
   font-size: 12px;
-  color: var(--muted);
 }
-.back:hover {
-  color: var(--accent);
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #777777;
 }
+
+.breadcrumbs a {
+  color: #666666;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.breadcrumbs a:hover {
+  color: var(--plum);
+  text-decoration: underline;
+}
+
+.breadcrumbSep {
+  color: #cccccc;
+  font-size: 11px;
+}
+
+.currentCrumb {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.backLink {
+  color: var(--plum);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 150ms ease;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+  transform: translateX(-2px);
+}
+
+/* ✦ Main 2-Column Layout */
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 384px) minmax(0, 1fr);
-  gap: 56px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 64px;
   align-items: start;
 }
+
+/* ✦ Gallery Column */
+.galleryColumn {
+  position: sticky;
+  top: calc(var(--header-height, 90px) + 24px);
+}
+
 .photography {
   min-width: 0;
-  width: min(100%, var(--photo-desktop-width));
-  justify-self: center;
+  width: 100%;
   margin: 0;
 }
-.photography .photo {
+
+.photoFrame {
+  position: relative;
   width: 100%;
-  aspect-ratio: var(--photo-aspect);
-  background: var(--paper);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fbf8f5;
+  border: 1px solid #ede6de;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 250ms ease;
 }
+
+.photoFrame:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.photoTag {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(220, 210, 200, 0.6);
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--plum);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.photo {
+  width: 100%;
+  aspect-ratio: var(--photo-aspect, 3 / 4);
+  display: block;
+}
+
 .photo img {
-  /* These narrow sample portraits need their full height, not a tighter crop. */
-  object-fit: contain;
-  object-position: center;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.photography figcaption {
-  margin-top: 12px;
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.65;
+
+.photoFrame:hover .photo img {
+  transform: scale(1.03);
 }
+
+.caption {
+  margin-top: 14px;
+  color: #777777;
+  font-size: 11.5px;
+  line-height: 1.6;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ✦ Information Column */
 .information {
   min-width: 0;
-  /* Normal flow is the default on shorter screens and with expanded disclosures. */
+  display: flex;
+  flex-direction: column;
 }
-.category {
-  margin: 4px 0 12px;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  color: var(--muted);
+
+.headerBlock {
+  padding-bottom: 22px;
+  border-bottom: 1px solid #ede6de;
+  margin-bottom: 24px;
 }
+
+.categoryBadge {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--plum);
+  text-transform: uppercase;
+}
+
 .title {
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(42px, 4.2vw, 60px);
+  font-size: clamp(38px, 4vw, 54px);
   font-weight: 400;
-  line-height: 1.08;
-  letter-spacing: -0.015em;
-  text-wrap: balance;
-  overflow-wrap: break-word;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #111111;
   margin: 0 0 16px;
+  text-wrap: balance;
 }
-.price {
-  font-size: 18px;
-  font-weight: 500;
-  margin-bottom: 18px;
-}
-.description {
-  max-width: 42ch;
-  color: var(--muted);
-  font-size: 13px;
-  margin-bottom: 0;
-}
-.ensemble {
-  margin: 0 0 20px;
-  padding: 16px 18px;
-  border-left: 2px solid var(--plum);
-  background: #eee7e1;
-}
-.ensemble p {
-  margin: 0 0 4px;
-  font-size: 13px;
-  font-weight: 500;
-}
-.ensemble span {
-  color: var(--muted);
-  font-size: 12px;
-}
-.breakdown {
-  margin: 0 8px 18px;
-  font-size: 12px;
-}
-.breakdown div {
-  display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
   gap: 12px;
+}
+
+.price {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: -0.01em;
+}
+
+.taxPill {
+  font-size: 11.5px;
+  color: #777777;
+  background: #f4ede4;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+/* ✦ 3-Piece Ensemble Composition Card */
+.ensembleCard {
+  background: #fbf9f6;
+  border: 1px solid #ebdcd5;
+  border-left: 3px solid var(--plum);
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+}
+
+.ensembleHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 12px;
 }
-.breakdown dt { font-weight: 500; }
-.breakdown dd {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.8;
+
+.sparkleIcon {
+  color: var(--plum);
+  font-size: 14px;
 }
-.disclosure {
-  margin: 16px 0 28px;
-  color: var(--muted);
+
+.ensembleTitle {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: 0.02em;
+}
+
+.ensembleList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: #444444;
+}
+
+.ensembleList li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.checkIcon {
+  color: var(--plum);
+  font-weight: bold;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.ensembleList strong {
+  color: #1a1a1a;
+}
+
+.ensembleNote {
+  display: block;
   font-size: 11px;
-  line-height: 1.7;
+  color: #777777;
+  line-height: 1.5;
+  border-top: 1px dashed #e8ded4;
+  padding-top: 8px;
 }
+
+.description {
+  color: #555555;
+  font-size: 13.5px;
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+/* ✦ WhatsApp Inquiry Button */
+.whatsappButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  background: #f0fbf0;
+  border: 1px solid #c2eec2;
+  border-radius: 6px;
+  color: #166524;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 180ms ease;
+}
+
+.whatsappButton:hover {
+  background: #25d366;
+  border-color: #25d366;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.28);
+}
+
+.whatsappIcon {
+  font-size: 16px;
+}
+
+/* ✦ Trust Strip */
+.trustStrip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  margin-top: 28px;
+  padding: 20px;
+  background: #faf7f2;
+  border: 1px solid #ede6de;
+  border-radius: 8px;
+}
+
+.trustItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.trustEmoji {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.trustItem strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+
+.trustItem small {
+  display: block;
+  font-size: 10.5px;
+  color: #666666;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.disclosure {
+  margin: 20px 0 28px;
+  color: #888888;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* ✦ Accordion Details */
 .details {
   border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
 }
-.details details {
+
+.accordion {
   border-bottom: 1px solid var(--line);
 }
-.details summary {
+
+.accordionHeader {
   cursor: pointer;
-  padding: 18px 8px;
+  padding: 18px 0;
   min-height: 52px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  transition: color 150ms ease;
 }
-.details summary:hover {
-  color: var(--accent);
+
+.accordionHeader::-webkit-details-marker {
+  display: none;
 }
-.details summary:focus-visible {
-  outline: 2px solid #9e6c83;
-  outline-offset: 2px;
+
+.accordionHeader:hover {
+  color: var(--plum);
 }
-.details p {
-  margin: 0 8px 16px;
-  font-size: 12px;
-  color: var(--muted);
+
+.accordionIcon {
+  font-size: 18px;
+  font-weight: 300;
+  color: #777777;
+  transition: transform 200ms ease;
 }
-.details a {
+
+.accordion[open] .accordionIcon {
+  transform: rotate(45deg);
+  color: var(--plum);
+}
+
+.accordionBody {
+  padding-bottom: 18px;
+  font-size: 12.5px;
+  color: #555555;
+  line-height: 1.7;
+}
+
+.accordionBody p {
+  margin: 0 0 10px;
+}
+
+.accordionBody p:last-child {
+  margin-bottom: 0;
+}
+
+.detailLink {
   display: inline-block;
-  padding: 10px 0;
-  min-height: 44px;
+  color: var(--plum);
+  font-weight: 500;
   text-decoration: underline;
-  text-underline-offset: 4px;
+  text-underline-offset: 3px;
+  font-size: 12px;
 }
-.details a:hover {
-  color: var(--accent);
+
+.detailLink:hover {
+  color: #462635;
 }
-@media (min-width: 901px) and (min-height: 1000px) {
-  .information:not(:has(details[open])) {
-    position: sticky;
-    top: calc(var(--header-height) + 24px);
-  }
-}
+
+/* Responsive */
 @media (max-width: 900px) {
   .page {
     width: calc(100% - 32px);
-    padding: 20px 0 48px;
+    padding: 16px 0 56px;
   }
   .layout {
     grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
+    gap: 36px;
   }
-  .photography {
-    width: min(100%, var(--photo-mobile-width));
+  .galleryColumn {
+    position: static;
+  }
+  .photo {
+    max-height: 540px;
+  }
+  .trustStrip {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
   }
 }

@@ -64,8 +64,15 @@
   outline-offset: 3px;
 }
 .checkout h3:focus,
-.checkoutTitle:focus {
+.checkout h3:focus-visible,
+.checkoutTitle:focus,
+.checkoutTitle:focus-visible,
+h3.checkoutTitle:focus,
+h3.checkoutTitle:focus-visible {
   outline: none !important;
+  outline-style: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
 }
 .content {
   flex: 1;
@@ -386,6 +393,13 @@
   line-height: 1.25;
   color: #1a1a1a;
   outline: none !important;
+  border: none !important;
+}
+.checkoutTitle:focus,
+.checkoutTitle:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 .checkoutSubtitle {
   margin: 0 0 20px;

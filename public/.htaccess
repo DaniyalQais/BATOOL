@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  # If requesting a directory, serve index.html
+  RewriteRule ^$ index.html [L]
+  # If request matches existing file or directory, serve directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+  # Try appending .html
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(.*)/?$ $1.html [L]
+  # Otherwise fallback to 404.html
+  RewriteRule ^.*$ 404.html [L]
+</IfModule>
