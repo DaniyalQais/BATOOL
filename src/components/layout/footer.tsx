@@ -160,7 +160,6 @@ export function Footer() {
           </p>
           <div className={styles.legal}>
             <span>© {new Date().getFullYear()} BATOOL. All Rights Reserved.</span>
-            <span>Crafted by Aonicon Valley.</span>
             <span className={styles.countryBadge}>Pakistan · PKR ₨</span>
           </div>
         </div>

@@ -571,7 +571,7 @@ th {
   .wordmark {
     font-size: 28px;
   }
-  nav {
+  header nav {
     order: 3;
     width: 100%;
     justify-content: center;
@@ -633,7 +633,7 @@ th {
     padding-left: 6%;
     padding-right: 6%;
   }
-  nav {
+  header nav {
     gap: 20px;
     font-size: 9px;
   }
