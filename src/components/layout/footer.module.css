@@ -10,17 +10,17 @@
 .hallmarkStrip {
   border-bottom: 1px solid var(--line);
   background: #faf6f0;
-  padding: 24px 0;
+  padding: 22px 0;
 }
 
 .hallmarkContainer {
   width: 90%;
-  max-width: 1440px;
+  max-width: 1400px;
   margin-inline: auto;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 
 .hallmarkItem {
@@ -30,10 +30,9 @@
 }
 
 .hallmarkIcon {
-  font-size: 26px;
+  font-size: 24px;
   line-height: 1;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
 }
 
 .hallmarkTitle {
@@ -46,7 +45,7 @@
 
 .hallmarkText {
   margin: 3px 0 0;
-  font-size: 11px;
+  font-size: 11.5px;
   color: #666666;
   line-height: 1.4;
 }
@@ -58,13 +57,13 @@
 /* ✦ Newsletter / The BATOOL Edit */
 .newsletterBand {
   border-bottom: 1px solid var(--line);
-  background: radial-gradient(circle at 100% 0%, rgba(89, 44, 63, 0.06) 0%, transparent 60%), #fdfcfb;
+  background: radial-gradient(circle at 100% 0%, rgba(89, 44, 63, 0.05) 0%, transparent 60%), #fdfcfb;
   padding-block: 44px;
 }
 
 .newsletter {
   width: 90%;
-  max-width: 1440px;
+  max-width: 1400px;
   margin-inline: auto;
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -79,7 +78,7 @@
 .newsletterEyebrow {
   display: inline-block;
   margin-bottom: 8px;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.16em;
   color: var(--plum);
@@ -89,7 +88,7 @@
 .newsletterHeading {
   margin: 0 0 10px;
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(32px, 3.2vw, 42px);
+  font-size: clamp(30px, 3vw, 40px);
   font-weight: 400;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -182,56 +181,69 @@
   line-height: 1.6;
 }
 
-/* ✦ Main Grid */
+/* ✦ Main Grid Columns */
 .main {
   width: 90%;
-  max-width: 1440px;
+  max-width: 1400px;
   margin-inline: auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.8fr) repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.25fr);
   align-items: start;
-  gap: 40px 32px;
-  padding-block: 52px 40px;
+  gap: 48px 40px;
+  padding-block: 56px 44px;
 }
 
+/* Brand Narrative Column */
 .brand {
   min-width: 0;
-  padding-right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding-right: 16px;
 }
 
-.brandMark {
+.brandLogoLink {
   display: inline-block;
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 34px;
-  font-weight: 400;
-  letter-spacing: 0.18em;
-  color: #111111;
   text-decoration: none;
-  line-height: 1;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.brandLogoLink:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.brandFooterLogo {
+  height: 48px;
+  width: auto;
+  max-width: 185px;
+  object-fit: contain;
+  display: block;
 }
 
 .brandSub {
   display: block;
-  margin-top: 6px;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   color: var(--plum);
   text-transform: uppercase;
 }
 
 .brandDescription {
-  margin: 14px 0 20px;
+  margin: 0;
   color: #666666;
-  font-size: 12.5px;
-  line-height: 1.7;
-  max-width: 44ch;
+  font-size: 13px;
+  line-height: 1.65;
+  max-width: 40ch;
 }
 
 .whatsappConciergeBadge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin-top: 4px;
   padding: 8px 14px;
   background: #eef7ee;
   border: 1px solid #cce5cc;
@@ -262,43 +274,48 @@
   background: #ffffff;
 }
 
+/* Navigation & Service Columns */
 .linkGroup {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .linkGroup h3 {
-  margin: 0 0 16px;
-  font-size: 11px;
+  margin: 0 0 18px;
+  font-size: 11.5px;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.3;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #1a1a1a;
-  border-bottom: 1.5px solid var(--plum);
-  padding-bottom: 6px;
+  border-bottom: 2px solid var(--plum);
+  padding-bottom: 5px;
   display: inline-block;
+  align-self: flex-start;
 }
 
-.linkGroup ul {
+.linkList {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 11px;
+  width: 100%;
 }
 
-.footer .linkGroup a {
-  display: inline-flex;
-  align-items: center;
+.linkList a {
+  display: inline-block;
   color: #555555;
   font-size: 13px;
   line-height: 1.5;
   text-decoration: none;
-  transition: all 150ms ease;
+  transition: color 150ms ease, transform 150ms ease;
 }
 
-.footer .linkGroup a:hover {
+.linkList a:hover {
   color: var(--plum);
   transform: translateX(3px);
 }
@@ -310,14 +327,15 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  width: 100%;
 }
 
 .serviceNotes li strong {
   display: block;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   color: #222222;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .serviceNotes li span {
@@ -335,9 +353,9 @@
 
 .bottom {
   width: 90%;
-  max-width: 1440px;
+  max-width: 1400px;
   margin-inline: auto;
-  padding-block: 20px 24px;
+  padding-block: 22px 26px;
 }
 
 .concept {
@@ -375,7 +393,7 @@
   }
   .main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 36px 28px;
+    gap: 40px 32px;
   }
   .brand {
     grid-column: 1 / -1;
@@ -409,24 +427,4 @@
   .subscribe {
     width: 100%;
   }
-}
-
-
-.brandLogoLink {
-  display: inline-block;
-  text-decoration: none;
-  transition: opacity 150ms ease, transform 150ms ease;
-}
-
-.brandLogoLink:hover {
-  opacity: 0.88;
-  transform: translateY(-1px);
-}
-
-.brandFooterLogo {
-  height: 50px;
-  width: auto;
-  max-width: 200px;
-  object-fit: contain;
-  display: block;
 }

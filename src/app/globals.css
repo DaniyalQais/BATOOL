@@ -108,16 +108,16 @@ header {
   margin-top: 7px;
   text-align: center;
 }
-nav {
+header nav {
   display: flex;
   gap: 32px;
   font-size: 11px;
 }
-nav a:hover,
+header nav a:hover,
 .text-link:hover {
   color: var(--accent);
 }
-nav a:last-child {
+header nav a:last-child {
   color: var(--accent);
 }
 .actions {

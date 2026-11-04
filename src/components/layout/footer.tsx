@@ -21,7 +21,6 @@ export function Footer() {
               <p className={styles.hallmarkText}>TCS &amp; Trax express in 3–5 working days</p>
             </div>
           </div>
-          <div className={styles.hallmarkDivider} aria-hidden="true" />
           <div className={styles.hallmarkItem}>
             <span className={styles.hallmarkIcon} aria-hidden="true">💵</span>
             <div>
@@ -29,7 +28,6 @@ export function Footer() {
               <p className={styles.hallmarkText}>Doorstep COD available across Pakistan</p>
             </div>
           </div>
-          <div className={styles.hallmarkDivider} aria-hidden="true" />
           <div className={styles.hallmarkItem}>
             <span className={styles.hallmarkIcon} aria-hidden="true">📦</span>
             <div>
@@ -37,7 +35,6 @@ export function Footer() {
               <p className={styles.hallmarkText}>Verify your stitched suit before payment</p>
             </div>
           </div>
-          <div className={styles.hallmarkDivider} aria-hidden="true" />
           <div className={styles.hallmarkItem}>
             <span className={styles.hallmarkIcon} aria-hidden="true">🔄</span>
             <div>
@@ -95,41 +92,45 @@ export function Footer() {
         </div>
 
         {/* Shop Navigation */}
-        <nav className={styles.linkGroup} aria-labelledby="footer-shop-title">
+        <div className={styles.linkGroup}>
           <h3 id="footer-shop-title">The Collections</h3>
-          <ul>
-            {stitchedCategories.map(category => (
-              <li key={category}>
-                <Link href={collectionHref(category)}>{category}</Link>
+          <nav aria-labelledby="footer-shop-title">
+            <ul className={styles.linkList}>
+              {stitchedCategories.map(category => (
+                <li key={category}>
+                  <Link href={collectionHref(category)}>{category}</Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/#collection">All Ready-to-Wear</Link>
               </li>
-            ))}
-            <li>
-              <Link href="/#collection">All Ready-to-Wear</Link>
-            </li>
-          </ul>
-        </nav>
+            </ul>
+          </nav>
+        </div>
 
         {/* Customer Care */}
-        <nav className={styles.linkGroup} aria-labelledby="footer-care-title">
+        <div className={styles.linkGroup}>
           <h3 id="footer-care-title">Client Concierge</h3>
-          <ul>
-            <li><Link href="/help/size/">Size &amp; Fit Guide</Link></li>
-            <li><Link href="/help/delivery/">Delivery &amp; Exchange Terms</Link></li>
-            <li><Link href="/help/contact/">Contact Atelier</Link></li>
-            {settings.public_whatsapp && (
-              <li>
-                <a href={`https://wa.me/${settings.public_whatsapp}`} rel="noopener noreferrer">
-                  WhatsApp Support
-                </a>
-              </li>
-            )}
-            {settings.support_email && (
-              <li>
-                <a href={`mailto:${settings.support_email}`}>{settings.support_email}</a>
-              </li>
-            )}
-          </ul>
-        </nav>
+          <nav aria-labelledby="footer-care-title">
+            <ul className={styles.linkList}>
+              <li><Link href="/help/size/">Size &amp; Fit Guide</Link></li>
+              <li><Link href="/help/delivery/">Delivery &amp; Exchange Terms</Link></li>
+              <li><Link href="/help/contact/">Contact Atelier</Link></li>
+              {settings.public_whatsapp && (
+                <li>
+                  <a href={`https://wa.me/${settings.public_whatsapp}`} rel="noopener noreferrer">
+                    WhatsApp Support
+                  </a>
+                </li>
+              )}
+              {settings.support_email && (
+                <li>
+                  <a href={`mailto:${settings.support_email}`}>{settings.support_email}</a>
+                </li>
+              )}
+            </ul>
+          </nav>
+        </div>
 
         {/* Delivery & Assurance */}
         <div className={styles.linkGroup}>
