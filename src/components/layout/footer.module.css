@@ -410,3 +410,23 @@
     width: 100%;
   }
 }
+
+
+.brandLogoLink {
+  display: inline-block;
+  text-decoration: none;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.brandLogoLink:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.brandFooterLogo {
+  height: 50px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  display: block;
+}

@@ -68,8 +68,14 @@ export function Footer() {
       <div className={styles.main}>
         {/* Brand Narrative */}
         <div className={styles.brand}>
-          <Link href="/" className={`wordmark ${styles.brandMark}`} aria-label="BATOOL home">
-            BATOOL
+          <Link href="/" className={styles.brandLogoLink} aria-label="BATOOL home">
+            <img
+              src="/brand/batool-logo.webp"
+              alt="BATOOL — Modest Wear · Luxury"
+              className={styles.brandFooterLogo}
+              width="180"
+              height="50"
+            />
           </Link>
           <span className={styles.brandSub}>LUXURY STITCHED PRET · PAKISTAN</span>
           <p className={styles.brandDescription}>

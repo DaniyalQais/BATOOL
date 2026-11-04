@@ -28,6 +28,15 @@ function Checkout() {
   return <main id="main" className={styles.checkoutPage}>
     <div className={styles.container}>
       <div className={styles.topNav}>
+        <Link href="/" aria-label="BATOOL home" style={{ display: "inline-block" }}>
+          <img
+            src="/brand/batool-logo.webp"
+            alt="BATOOL — Modest Wear · Luxury"
+            width="145"
+            height="40"
+            style={{ height: "40px", width: "auto", objectFit: "contain", display: "block" }}
+          />
+        </Link>
         <nav aria-label="Breadcrumbs" className={styles.breadcrumbs}>
           <Link href="/">Home</Link>
           <span className={styles.crumbSep}>/</span>

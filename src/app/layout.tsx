@@ -31,6 +31,10 @@ export const metadata: Metadata = {
   description:
     "Discover BATOOL — stitched 3-piece Pakistani ready-to-wear in S, M, L and XL, for everyday moments and special occasions.",
   robots: { index: false, follow: false },
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 export default function RootLayout({
   children,

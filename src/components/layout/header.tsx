@@ -18,8 +18,13 @@ export function Header() {
       </div>
       <header className={styles.header}>
         <Link href="/" className={`wordmark ${styles.brand}`} aria-label="Batool home">
-          <span className={styles.brandTitle}>BATOOL</span>
-          <span className={styles.brandTagline}>W E A R &nbsp;Y O U R &nbsp;S T O R Y</span>
+          <img
+            src="/brand/batool-logo.webp"
+            alt="BATOOL — Modest Wear · Luxury"
+            className={styles.brandLogo}
+            width="170"
+            height="46"
+          />
         </Link>
         <MobileNavigation>
           <nav className={styles.links} aria-label="Main navigation">

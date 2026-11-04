@@ -98,6 +98,7 @@ export default function CartDrawer({ onClose }: { onClose: () => void }) {
       }}>
         {!items.length ? (
           <div className={styles.empty}>
+            <img src="/brand/batool-emblem.webp" alt="" className={styles.emptyEmblem} width="68" height="68" aria-hidden="true" />
             <h3>Your bag awaits.</h3>
             <p>Discover a piece that feels like you.</p>
             <Link ref={emptyLink} href={collectionHref()} onNavigate={onClose} className={styles.primary}>

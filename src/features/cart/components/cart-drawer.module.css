@@ -564,3 +564,13 @@ h3.checkoutTitle:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .drawer[open] { animation: none; }
 }
+
+
+.emptyEmblem {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 16px;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(197, 168, 128, 0.25));
+}
