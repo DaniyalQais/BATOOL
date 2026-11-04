@@ -1,154 +1,225 @@
-﻿.section {
-  padding: 64px 5% 0;
+/* Luxury Collection Discovery Feature Banner */
+.section {
+  padding: 72px 5% 0;
+  max-width: 1600px;
+  margin: 0 auto;
 }
+
 .card {
   position: relative;
   isolation: isolate;
   display: flex;
   align-items: center;
   min-width: 0;
-  min-height: clamp(480px, 43vw, 640px);
+  min-height: clamp(500px, 46vw, 660px);
   overflow: hidden;
   color: var(--paper);
-  background: #65564d;
+  background: #190e15;
+  border-radius: 12px;
+  box-shadow: 0 16px 44px rgba(48, 37, 41, 0.08);
+  border: 1px solid rgba(81, 52, 63, 0.12);
 }
+
 .card .photo {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
+
 .photo img {
   object-position: 50% 12%;
-  transition: transform 1600ms cubic-bezier(0.2, 0.65, 0.3, 1);
+  transform: scale(1);
+  transition: transform 3.5s cubic-bezier(0.2, 0.65, 0.3, 1);
 }
+
+.card:hover .photo img,
+.card:focus-within .photo img {
+  transform: scale(1.035);
+}
+
+/* Atmospheric Editorial Gradient Overlay */
 .card::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, rgb(24 18 20 / 78%) 0%, rgb(24 18 20 / 52%) 38%, rgb(24 18 20 / 16%) 70%, rgb(24 18 20 / 3%) 100%);
+  background:
+    linear-gradient(90deg, rgba(22, 10, 18, 0.94) 0%, rgba(22, 10, 18, 0.86) 32%, rgba(22, 10, 18, 0.45) 62%, transparent 92%),
+    linear-gradient(0deg, rgba(22, 10, 18, 0.6) 0%, transparent 40%);
 }
+
 .caption {
   position: relative;
-  z-index: 1;
-  width: 62%;
-  padding: clamp(32px, 5vw, 80px);
+  z-index: 2;
+  width: 58%;
+  padding: clamp(40px, 5.5vw, 90px);
   overflow-wrap: break-word;
-  animation: reveal 1000ms ease-out both;
+  animation: reveal 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+.eyebrowWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding: 6px 14px;
+  background: rgba(212, 189, 168, 0.14);
+  border: 1px solid rgba(212, 189, 168, 0.3);
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.eyebrowSparkle {
+  color: #d4bda8;
+  font-size: 10px;
+  line-height: 1;
+}
+
 .eyebrow {
-  margin: 0 0 24px;
-  font-size: 9px;
-  line-height: 1.8;
+  margin: 0;
+  font-size: 10px;
+  font-weight: 600;
   letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #d4bda8;
+  line-height: 1;
 }
+
 .title {
-  max-width: 11ch;
-  margin: 0 0 24px;
+  max-width: 13ch;
+  margin: 0 0 20px;
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(60px, 6.4vw, 100px);
+  font-size: clamp(46px, 5vw, 76px);
   font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: -0.025em;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #faf7f2;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
   text-wrap: balance;
 }
+
 .subtitle {
-  margin: 0 0 30px;
-  font-size: 12px;
-  line-height: 1.9;
-  color: rgb(250 248 244 / 88%);
+  margin: 0 0 34px;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(250, 248, 244, 0.88);
+  max-width: 36ch;
+  letter-spacing: 0.01em;
 }
+
+/* High-End Luxury CTA Button */
 .explore {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: 28px;
-  min-height: 46px;
-  padding: 0 18px;
-  border: 1px solid rgb(250 248 244 / 60%);
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  transition: background-color 250ms ease, border-color 250ms ease;
+  gap: 22px;
+  min-height: 50px;
+  padding: 0 32px;
+  background: #faf7f2;
+  color: #361b28;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: all 220ms ease;
 }
+
 .explore svg {
-  width: 20px;
-  height: 20px;
-  transition: transform 350ms ease;
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+  transition: transform 220ms ease;
 }
-.explore:hover,
+
+.explore:hover {
+  background: #ffffff;
+  color: #1a0812;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+.explore:hover svg {
+  transform: translateX(4px);
+}
+
 .explore:focus-visible {
-  border-color: var(--paper);
-  background: rgb(250 248 244 / 12%);
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
 }
-.explore:focus-visible {
-  outline: 2px solid var(--paper);
-  outline-offset: 5px;
-}
-.card:focus-within .photo img {
-  transform: scale(1.035);
-}
-.explore:focus-visible svg {
-  transform: translateX(3px);
-}
+
 @keyframes reveal {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
 @supports (animation-timeline: view()) {
   .caption {
     animation-timeline: view();
     animation-range: entry 5% entry 95%;
   }
 }
-@media (hover: hover) and (pointer: fine) {
-  .card:hover .photo img {
-    transform: scale(1.035);
-  }
-  .explore:hover svg {
-    transform: translateX(3px);
-  }
-}
-@media (max-width: 700px) {
+
+@media (max-width: 800px) {
   .caption {
-    width: 80%;
+    width: 78%;
+    padding: 44px 36px;
   }
   .title {
-    font-size: clamp(52px, 8vw, 64px);
+    font-size: clamp(40px, 7vw, 56px);
   }
 }
+
 @media (max-width: 560px) {
   .section {
-    padding: 40px 6% 0;
+    padding: 44px 5% 0;
   }
   .card {
     align-items: end;
-    min-height: 560px;
+    min-height: 540px;
+    border-radius: 10px;
   }
   .photo img {
     object-position: 50% 0%;
   }
   .card::after {
-    background: linear-gradient(90deg, rgb(24 18 20 / 24%), rgb(24 18 20 / 2%)), linear-gradient(0deg, rgb(24 18 20 / 88%), rgb(24 18 20 / 55%) 40%, transparent 75%);
+    background:
+      linear-gradient(0deg, #160a12 0%, rgba(22, 10, 18, 0.94) 34%, rgba(22, 10, 18, 0.5) 65%, transparent 85%);
   }
   .caption {
     width: 100%;
-    padding: 32px 26px;
+    padding: 32px 24px;
+  }
+  .eyebrowWrapper {
+    margin-bottom: 14px;
+    padding: 5px 12px;
   }
   .eyebrow {
-    margin-bottom: 18px;
-    font-size: 8px;
-    letter-spacing: 0.16em;
+    font-size: 9px;
   }
   .title {
-    margin-bottom: 18px;
-    font-size: clamp(45px, 12vw, 64px);
+    margin-bottom: 14px;
+    font-size: clamp(36px, 10vw, 48px);
   }
   .subtitle {
-    margin-bottom: 22px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .explore {
+    padding: 0 24px;
+    min-height: 46px;
     font-size: 11px;
+    gap: 16px;
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .caption {
     animation: none;
@@ -160,8 +231,8 @@
   }
   .card:hover .photo img,
   .card:focus-within .photo img,
-  .explore:hover svg,
-  .explore:focus-visible svg {
+  .explore:hover,
+  .explore:hover svg {
     transform: none;
   }
 }
