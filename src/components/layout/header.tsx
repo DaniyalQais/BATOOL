@@ -8,12 +8,12 @@ import styles from "./header.module.css";
 export function Header() {
   return (
     <>
-      <div className={`announcement ${styles.announcement}`}>
+      <div className={styles.announcement}>
         <div className={styles.announcementInner}>
           <span className={styles.announcementMessage}>
             A NEW EXPRESSION OF EVERYDAY ELEGANCE · READY-TO-WEAR LUXURY
           </span>
-          <span className={styles.announcementRegion}>PAKISTAN · PKR</span>
+          <span className={styles.announcementRegion}>PAKISTAN · PKR ₨</span>
         </div>
       </div>
       <header className={styles.header}>

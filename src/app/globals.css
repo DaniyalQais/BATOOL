@@ -85,11 +85,7 @@ p {
   letter-spacing: 2px;
   position: relative;
 }
-.announcement span {
-  position: absolute;
-  right: 5%;
-  font-size: 8px;
-}
+
 header {
   height: 111px;
   padding: 0 5%;
@@ -625,9 +621,7 @@ th {
     margin-right: 10%;
     min-height: 440px;
   }
-  .announcement span {
-    display: none;
-  }
+
 }
 @media (max-width: 560px) {
   .announcement {
