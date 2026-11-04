@@ -13,3 +13,4 @@
   # Otherwise fallback to 404.html
   RewriteRule ^.*$ 404.html [L]
 </IfModule>
+
