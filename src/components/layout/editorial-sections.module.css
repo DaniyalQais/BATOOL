@@ -10,9 +10,11 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 0 5% 72px;
-  padding: 72px 24px;
-  border-block: 1px solid #e8e0d6;
-  background: #f9f6f0;
+  padding: 64px 24px;
+  border: 1px solid #ebe4da;
+  border-radius: 12px;
+  background: #fbf9f6;
+  box-shadow: 0 10px 30px rgba(48, 37, 41, 0.04);
 }
 .highlight {
   min-width: 0;
@@ -20,16 +22,16 @@
   text-align: center;
 }
 .highlight + .highlight {
-  border-left: 1px solid #e8e0d6;
+  border-left: 1px solid #ebe4da;
 }
 .icon {
   display: block;
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 26px;
-  color: #8d755e;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 24px;
+  color: var(--plum);
   fill: none;
-  stroke-width: 1px;
+  stroke-width: 1.2px;
   transition: transform 650ms cubic-bezier(0.2, 0.65, 0.3, 1);
 }
 .icon > * {
@@ -37,11 +39,12 @@
 }
 .number {
   display: block;
-  margin-bottom: 20px;
-  font-size: 9px;
+  margin-bottom: 18px;
+  font-size: 10px;
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: 0.2em;
-  color: #a08a73;
+  letter-spacing: 0.22em;
+  color: #bca07e;
 }
 .highlight h3 {
   max-width: 17ch;

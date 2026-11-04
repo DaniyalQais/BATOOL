@@ -384,50 +384,92 @@ select {
   margin-top: 25px;
 }
 .story {
-  margin: 10px 5% 0;
+  margin: 28px 5% 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background: #eee7e1;
+  background: #faf6f0;
+  border: 1px solid #ede3d7;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(48, 37, 41, 0.05);
 }
 .story-photo {
-  min-height: 510px;
-  margin: 0 20% 0 0;
+  min-height: 520px;
+  width: 100%;
+  height: 100%;
 }
 .story-copy {
-  padding: 65px 14% 50px 0;
+  padding: clamp(40px, 6vw, 80px) clamp(30px, 5vw, 60px);
   align-self: center;
 }
 .story-copy h2 {
   font-size: clamp(36px, 4vw, 54px);
+  line-height: 1.1;
+  color: #111111;
+  margin-bottom: 16px;
+}
+.story-copy em {
+  font-style: italic;
+  color: var(--plum);
 }
 .story-copy p:not(.eyebrow) {
-  max-width: 300px;
+  max-width: 420px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
+  line-height: 1.7;
 }
 .text-link {
-  border-bottom: 1px solid #9b7b7e;
-  padding: 12px 0;
   display: inline-flex;
-  gap: 45px;
-  font-size: 11px;
-  margin-top: 15px;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 28px;
+  background: var(--plum);
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 24px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(81, 52, 63, 0.22);
+  transition: all 180ms ease;
+}
+.text-link:hover {
+  background: #462635;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(81, 52, 63, 0.32);
 }
 .brand-note {
   text-align: center;
-  padding: 85px 20% 65px;
+  padding: 90px 15% 70px;
 }
 .brand-note .eyebrow {
   margin-bottom: 15px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--plum);
+  text-transform: uppercase;
 }
 .brand-note h2 {
-  font-size: clamp(32px, 3vw, 38px);
+  font-size: clamp(34px, 3.4vw, 44px);
+  line-height: 1.15;
+  color: #111111;
 }
 .brand-note p:not(.eyebrow) {
-  max-width: 430px;
-  margin: 20px auto;
+  max-width: 480px;
+  margin: 20px auto 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.ornament {
+  display: inline-block;
+  margin-top: 24px;
+  color: #c5a880;
+  font-size: 18px;
 }
 .ornament {
   color: #a0837c;
